@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Enhanced.DependencyInjection.Analyzers\Enhanced.DependencyInjection.CodeGeneration.csproj"
+					  OutputItemType="Analyzer"
+					  ReferenceOutputAssembly="false" />
+	  
+    <ProjectReference Include="..\..\src\Enhanced.DependencyInjection\Enhanced.DependencyInjection.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Remove="System.Net.Http" />
+    <Using Include="$(RootNamespace)" />
+  </ItemGroup>
+
+</Project>

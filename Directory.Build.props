@@ -1,0 +1,14 @@
+<Project>
+
+  <PropertyGroup>
+    <LangVersion>10</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IncludeCompat>false</IncludeCompat>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(IncludeCompat)' == 'true'">
+    <Compile Include="$(MSBuildThisFileDirectory)\compat\**\*.cs" LinkBase=".compat" />
+  </ItemGroup>
+
+</Project>
