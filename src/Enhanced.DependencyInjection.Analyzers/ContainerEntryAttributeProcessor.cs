@@ -10,14 +10,9 @@ namespace Enhanced.DependencyInjection.CodeGeneration;
 public class ContainerEntryAttributeProcessor : IIncrementalGenerator
 {
     private const string ModuleNamespace = "Enhanced.DependencyInjection.g";
-    private const string ModuleInterface = "Enhanced.DependencyInjection.IContainerModule";
     private const string ModuleClass = "ContainerModule";
-
     private const string ContainerEntryAttribute = "Enhanced.DependencyInjection.ContainerEntryAttribute";
-    private const string GeneratedCodeAttribute = "System.CodeDom.Compiler.GeneratedCodeAttribute";
-
-    private const string ServiceCollectionInterface = "Microsoft.Extensions.DependencyInjection.IServiceCollection";
-    private const string ServiceLifetimeEnum = "Microsoft.Extensions.DependencyInjection.ServiceLifetime";
+    private const string ExtensionsNamespace = "Enhanced.DependencyInjection.Extensions";
 
     private static readonly string ToolName;
     private static readonly string ToolVersion;
@@ -55,62 +50,35 @@ public class ContainerEntryAttributeProcessor : IIncrementalGenerator
         Compilation compilation,
         ImmutableArray<DiRegistration> registrations)
     {
-        var generatedCodeAttributeName = compilation
-            .GetTypeByMetadataName(GeneratedCodeAttribute)
-            ?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+        var tn = new TypeNames(compilation, ctx.ReportDiagnostic);
+        var moduleText = GetModuleText(tn, registrations, ctx.CancellationToken);
 
-        if (generatedCodeAttributeName is null)
-            ctx.ReportDiagnostic(Diagnostics.ECHDI01(GeneratedCodeAttribute, DiagnosticSeverity.Warning));
+        ctx.AddSource($"{ModuleClass}.g.cs", moduleText);
+    }
 
-        var moduleInterfaceName = compilation
-            .GetTypeByMetadataName(ModuleInterface)
-            ?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-
-        if (moduleInterfaceName is null)
-        {
-            ctx.ReportDiagnostic(Diagnostics.ECHDI01(ModuleInterface, DiagnosticSeverity.Error));
-            return;
-        }
-
-        var serviceCollectionName = compilation
-            .GetTypeByMetadataName(ServiceCollectionInterface)?
-            .ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-
-        if (serviceCollectionName is null)
-        {
-            ctx.ReportDiagnostic(Diagnostics.ECHDI01(ServiceCollectionInterface, DiagnosticSeverity.Error));
-            return;
-        }
-
-        var serviceLifetimeName = compilation
-            .GetTypeByMetadataName(ServiceLifetimeEnum)?
-            .ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-
-        if (serviceLifetimeName is null)
-        {
-            ctx.ReportDiagnostic(Diagnostics.ECHDI01(ServiceLifetimeEnum, DiagnosticSeverity.Error));
-            return;
-        }
-
+    private static SourceText GetModuleText(
+        TypeNames tn,
+        ImmutableArray<DiRegistration> registrations,
+        CancellationToken cancellationToken)
+    {
         using var memoryStream = new MemoryStream();
-        using var streamWriter = new StreamWriter(memoryStream);
+        using var streamWriter = new StreamWriter(memoryStream, Encoding.UTF8);
         using var indentedWriter = new IndentedTextWriter(streamWriter);
 
-        indentedWriter.WriteLine("using Enhanced.DependencyInjection.Extensions;");
+        indentedWriter.WriteLine("using {0};", ExtensionsNamespace);
         indentedWriter.WriteLine();
 
         using (indentedWriter.BeginScope("namespace {0}", ModuleNamespace))
         {
-            if (generatedCodeAttributeName != null)
-                indentedWriter.WriteLine("[{0}(\"{1}\", \"{2}\")]", generatedCodeAttributeName, ToolName, ToolVersion);
+            indentedWriter.WriteLine("[{0}(\"{1}\", \"{2}\")]", tn.GeneratedCodeAttributeName, ToolName, ToolVersion);
 
-            using (indentedWriter.BeginScope("internal sealed class {0} : {1}", ModuleClass, moduleInterfaceName))
-            using (indentedWriter.BeginScope("public void AddEntries({0} sc)", serviceCollectionName))
+            using (indentedWriter.BeginScope("internal sealed class {0} : {1}", ModuleClass, tn.ModuleInterfaceName))
+            using (indentedWriter.BeginScope("public void AddEntries({0} sc)", tn.ServiceCollectionName))
             {
                 foreach (var registration in registrations)
                 {
-                    ctx.CancellationToken.ThrowIfCancellationRequested();
-                    WriteRegistration(registration, indentedWriter, serviceLifetimeName);
+                    cancellationToken.ThrowIfCancellationRequested();
+                    WriteRegistration(registration, indentedWriter, tn.ServiceLifetimeEnumName);
                 }
             }
         }
@@ -118,23 +86,20 @@ public class ContainerEntryAttributeProcessor : IIncrementalGenerator
         indentedWriter.Flush();
         streamWriter.Flush();
         memoryStream.Flush();
-
         memoryStream.Seek(0, SeekOrigin.Begin);
 
-        ctx.AddSource(
-            $"{ModuleClass}.g.cs",
-            SourceText.From(memoryStream, Encoding.UTF8, canBeEmbedded: true, throwIfBinaryDetected: true));
+        return SourceText.From(memoryStream, Encoding.UTF8, canBeEmbedded: true, throwIfBinaryDetected: true);
     }
 
     private static void WriteRegistration(
         DiRegistration registration,
         TextWriter indentedWriter,
-        string serviceLifetimeName)
+        string serviceLifetimeEnumName)
     {
         var ns = registration.ImplType.GetNamespace();
 
         indentedWriter.Write("sc.Entry<global::{0}.{1}>(", ns, registration.ImplType.Identifier.ValueText);
-        indentedWriter.Write("{0}.{1:G}", serviceLifetimeName, registration.Lifetime);
+        indentedWriter.Write("{0}.{1:G}", serviceLifetimeEnumName, registration.Lifetime);
 
         foreach (var @interface in registration.Interfaces)
         {
@@ -166,7 +131,7 @@ public class ContainerEntryAttributeProcessor : IIncrementalGenerator
 
             var interfaces = attribute.ArgumentList.Arguments
                 .FindTypeOfExpressions(1)
-                .Select(t => ModelExtensions.GetTypeInfo(model, t).Type!)
+                .Select(t => model.GetTypeInfo(t).Type!)
                 .ToImmutableArray();
 
             if (interfaces.Length == 0)

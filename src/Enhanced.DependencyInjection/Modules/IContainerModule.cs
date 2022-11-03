@@ -1,4 +1,4 @@
-﻿namespace Enhanced.DependencyInjection;
+﻿namespace Enhanced.DependencyInjection.Modules;
 
 public interface IContainerModule
 {
