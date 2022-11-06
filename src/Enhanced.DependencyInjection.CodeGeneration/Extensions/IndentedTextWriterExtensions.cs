@@ -1,5 +1,5 @@
 ﻿using System.CodeDom.Compiler;
-using Enhanced.DependencyInjection.CodeGeneration.CodeGeneration;
+using Enhanced.DependencyInjection.CodeGeneration.Writers;
 
 namespace Enhanced.DependencyInjection.CodeGeneration.Extensions;
 

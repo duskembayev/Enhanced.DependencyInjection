@@ -6,15 +6,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Enhanced.DependencyInjection.Analyzers\Enhanced.DependencyInjection.CodeGeneration.csproj"
-					  OutputItemType="Analyzer"
-					  ReferenceOutputAssembly="false" />
-	  
-    <ProjectReference Include="..\..\src\Enhanced.DependencyInjection\Enhanced.DependencyInjection.csproj" />
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false"/>
+
+    <ProjectReference Include="..\..\src\Enhanced.DependencyInjection\Enhanced.DependencyInjection.csproj"/>
   </ItemGroup>
 
   <ItemGroup>
-    <Using Remove="System.Net.Http" />
-    <Using Include="$(RootNamespace)" />
+    <Using Remove="System.Net.Http"/>
+    <Using Include="$(RootNamespace)"/>
   </ItemGroup>
 
 </Project>

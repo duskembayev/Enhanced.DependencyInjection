@@ -1,6 +1,6 @@
 ﻿using System.CodeDom.Compiler;
 
-namespace Enhanced.DependencyInjection.CodeGeneration.CodeGeneration;
+namespace Enhanced.DependencyInjection.CodeGeneration.Writers;
 
 internal sealed class CSharpScope : IDisposable
 {
