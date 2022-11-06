@@ -1,23 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <OutputType>Exe</OutputType>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Enhanced.DependencyInjection.CodeGeneration\Enhanced.DependencyInjection.CodeGeneration.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\..\src\Enhanced.DependencyInjection\Enhanced.DependencyInjection.csproj" />
-    <ProjectReference Include="..\SampleRef\SampleRef.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Using Remove="System.Net.Http" />
-    <Using Include="$(RootNamespace)" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
-  </ItemGroup>
-
 </Project>
