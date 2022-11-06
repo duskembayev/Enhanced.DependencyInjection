@@ -3,7 +3,7 @@
 internal sealed class TypeNames
 {
     private const string ModuleInterface = "Enhanced.DependencyInjection.Modules.IContainerModule";
-    private const string ModuleAttribute = "Enhanced.DependencyInjection.Modules.ContainerModuleAttribute";
+    
 
     private const string GeneratedCodeAttribute = "System.CodeDom.Compiler.GeneratedCodeAttribute";
 
@@ -28,14 +28,6 @@ internal sealed class TypeNames
         if (string.IsNullOrEmpty(ModuleInterfaceName))
             diagnosticHandler(Diagnostics.ECHDI01(ModuleInterface, DiagnosticSeverity.Error));
 
-        ModuleAttributeName = compilation
-                                  .GetTypeByMetadataName(ModuleAttribute)
-                                  ?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
-                              ?? string.Empty;
-
-        if (string.IsNullOrEmpty(ModuleAttributeName))
-            diagnosticHandler(Diagnostics.ECHDI01(ModuleAttribute, DiagnosticSeverity.Error));
-
         ServiceCollectionName = compilation
                                     .GetTypeByMetadataName(ServiceCollectionInterface)
                                     ?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
@@ -56,6 +48,5 @@ internal sealed class TypeNames
     public string GeneratedCodeAttributeName { get; }
     public string ServiceLifetimeEnumName { get; }
     public string ServiceCollectionName { get; }
-    public string ModuleAttributeName { get; }
     public string ModuleInterfaceName { get; }
 }

@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enhanced.DependencyInjection", "Enhanced.DependencyInjection\Enhanced.DependencyInjection.csproj", "{5AFA52E6-BADA-4DE2-9643-4CFFA38C3F9D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enhanced.DependencyInjection.CodeGeneration", "Enhanced.DependencyInjection.Analyzers\Enhanced.DependencyInjection.CodeGeneration.csproj", "{463F7EDF-E21C-43EF-BB40-C56476E36601}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enhanced.DependencyInjection.CodeGeneration", "Enhanced.DependencyInjection.CodeGeneration\Enhanced.DependencyInjection.CodeGeneration.csproj", "{463F7EDF-E21C-43EF-BB40-C56476E36601}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".solution", ".solution", "{3AE1354D-E786-4E49-B423-55AD4BADD2DD}"
 	ProjectSection(SolutionItems) = preProject

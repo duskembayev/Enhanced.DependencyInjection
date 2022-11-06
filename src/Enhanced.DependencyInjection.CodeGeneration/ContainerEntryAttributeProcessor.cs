@@ -11,6 +11,8 @@ public class ContainerEntryAttributeProcessor : IIncrementalGenerator
 {
     private const string ModuleNamespace = "Enhanced.DependencyInjection.g";
     private const string ModuleClass = "ContainerModule";
+    private const string ModuleRefAttribute = "Enhanced.DependencyInjection.Modules.ContainerModuleAttribute";
+
     private const string ContainerEntryAttribute = "Enhanced.DependencyInjection.ContainerEntryAttribute";
     private const string ExtensionsNamespace = "Enhanced.DependencyInjection.Extensions";
 
@@ -51,19 +53,20 @@ public class ContainerEntryAttributeProcessor : IIncrementalGenerator
         ImmutableArray<DiRegistration> registrations)
     {
         var tn = new TypeNames(compilation, ctx.ReportDiagnostic);
-        var moduleText = GetModuleText(tn, registrations, ctx.CancellationToken);
 
-        ctx.AddSource($"{ModuleClass}.g.cs", moduleText);
+        ctx.AddSource($"{ModuleClass}.g.cs", GetModuleText(tn, registrations, ctx.CancellationToken));
+        ctx.AddSource(
+            $"{ModuleClass}.asm.g.cs",
+            $"[assembly: {ModuleRefAttribute}(typeof({ModuleNamespace}.{ModuleClass}))]");
     }
 
-    private static SourceText GetModuleText(
+    private static string GetModuleText(
         TypeNames tn,
         ImmutableArray<DiRegistration> registrations,
         CancellationToken cancellationToken)
     {
-        using var memoryStream = new MemoryStream();
-        using var streamWriter = new StreamWriter(memoryStream, Encoding.UTF8);
-        using var indentedWriter = new IndentedTextWriter(streamWriter);
+        using var textWriter = new StringWriter();
+        using var indentedWriter = new IndentedTextWriter(textWriter);
 
         indentedWriter.WriteLine("using {0};", ExtensionsNamespace);
         indentedWriter.WriteLine();
@@ -84,11 +87,8 @@ public class ContainerEntryAttributeProcessor : IIncrementalGenerator
         }
 
         indentedWriter.Flush();
-        streamWriter.Flush();
-        memoryStream.Flush();
-        memoryStream.Seek(0, SeekOrigin.Begin);
-
-        return SourceText.From(memoryStream, Encoding.UTF8, canBeEmbedded: true, throwIfBinaryDetected: true);
+        textWriter.Flush();
+        return textWriter.ToString();
     }
 
     private static void WriteRegistration(
