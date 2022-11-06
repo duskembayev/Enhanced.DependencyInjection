@@ -73,7 +73,7 @@ public static class ServiceCollectionExtensions
             throw new InvalidOperationException();
 
         var callingAssemblyModuleName = $"{callingAssemblyName}.Enhanced.DependencyInjection.ContainerModule";
-        var moduleType = callingAssembly.GetType(callingAssemblyName);
+        var moduleType = callingAssembly.GetType(callingAssemblyModuleName);
 
         if (moduleType is null || Activator.CreateInstance(moduleType) is not IContainerModule module)
             throw new ApplicationException(
