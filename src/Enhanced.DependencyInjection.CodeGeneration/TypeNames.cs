@@ -3,10 +3,7 @@
 internal sealed class TypeNames
 {
     private const string ModuleInterface = "Enhanced.DependencyInjection.Modules.IContainerModule";
-    
-
     private const string GeneratedCodeAttribute = "System.CodeDom.Compiler.GeneratedCodeAttribute";
-
     private const string ServiceCollectionInterface = "Microsoft.Extensions.DependencyInjection.IServiceCollection";
     private const string ServiceLifetimeEnum = "Microsoft.Extensions.DependencyInjection.ServiceLifetime";
 

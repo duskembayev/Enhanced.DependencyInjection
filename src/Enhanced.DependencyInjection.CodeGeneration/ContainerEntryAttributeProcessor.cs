@@ -1,18 +1,13 @@
 ﻿using System.CodeDom.Compiler;
 using System.Diagnostics;
 using System.Reflection;
-using System.Text;
-using Microsoft.CodeAnalysis.Text;
 
 namespace Enhanced.DependencyInjection.CodeGeneration;
 
 [Generator(LanguageNames.CSharp)]
 public class ContainerEntryAttributeProcessor : IIncrementalGenerator
 {
-    private const string ModuleNamespace = "Enhanced.DependencyInjection.g";
     private const string ModuleClass = "ContainerModule";
-    private const string ModuleRefAttribute = "Enhanced.DependencyInjection.Modules.ContainerModuleAttribute";
-
     private const string ContainerEntryAttribute = "Enhanced.DependencyInjection.ContainerEntryAttribute";
     private const string ExtensionsNamespace = "Enhanced.DependencyInjection.Extensions";
 
@@ -52,16 +47,26 @@ public class ContainerEntryAttributeProcessor : IIncrementalGenerator
         Compilation compilation,
         ImmutableArray<DiRegistration> registrations)
     {
+        var ns = $"{compilation.AssemblyName}.Enhanced.DependencyInjection";
         var tn = new TypeNames(compilation, ctx.ReportDiagnostic);
+        var referenceModules = new List<INamedTypeSymbol>();
 
-        ctx.AddSource($"{ModuleClass}.g.cs", GetModuleText(tn, registrations, ctx.CancellationToken));
+        foreach (var reference in compilation.SourceModule.ReferencedAssemblySymbols)
+        {
+            if (!TryGetContainerModule(reference, out var typeSymbol))
+                continue;
+
+            referenceModules.Add(typeSymbol);
+        }
+
         ctx.AddSource(
-            $"{ModuleClass}.asm.g.cs",
-            $"[assembly: {ModuleRefAttribute}(typeof({ModuleNamespace}.{ModuleClass}))]");
+            $"{ModuleClass}.g.cs",
+            GetModuleText(ns, tn, referenceModules, registrations, ctx.CancellationToken));
     }
 
-    private static string GetModuleText(
+    private static string GetModuleText(string ns,
         TypeNames tn,
+        IReadOnlyCollection<INamedTypeSymbol> modules,
         ImmutableArray<DiRegistration> registrations,
         CancellationToken cancellationToken)
     {
@@ -71,13 +76,19 @@ public class ContainerEntryAttributeProcessor : IIncrementalGenerator
         indentedWriter.WriteLine("using {0};", ExtensionsNamespace);
         indentedWriter.WriteLine();
 
-        using (indentedWriter.BeginScope("namespace {0}", ModuleNamespace))
+        using (indentedWriter.BeginScope("namespace {0}", ns))
         {
             indentedWriter.WriteLine("[{0}(\"{1}\", \"{2}\")]", tn.GeneratedCodeAttributeName, ToolName, ToolVersion);
 
-            using (indentedWriter.BeginScope("internal sealed class {0} : {1}", ModuleClass, tn.ModuleInterfaceName))
+            using (indentedWriter.BeginScope("public sealed class {0} : {1}", ModuleClass, tn.ModuleInterfaceName))
             using (indentedWriter.BeginScope("public void AddEntries({0} sc)", tn.ServiceCollectionName))
             {
+                foreach (var module in modules)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    WriteModule(module, indentedWriter);
+                }
+
                 foreach (var registration in registrations)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
@@ -89,6 +100,13 @@ public class ContainerEntryAttributeProcessor : IIncrementalGenerator
         indentedWriter.Flush();
         textWriter.Flush();
         return textWriter.ToString();
+    }
+
+    private static void WriteModule(INamedTypeSymbol module, IndentedTextWriter indentedWriter)
+    {
+        indentedWriter.WriteLine(
+            "sc.Module<{0}>();",
+            module.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
     }
 
     private static void WriteRegistration(
@@ -146,5 +164,14 @@ public class ContainerEntryAttributeProcessor : IIncrementalGenerator
     private static bool IsClassWithAttribute(SyntaxNode node, CancellationToken cancellationToken)
     {
         return node is ClassDeclarationSyntax {AttributeLists.Count: > 0};
+    }
+
+    private static bool TryGetContainerModule(
+        IAssemblySymbol assemblySymbol,
+        [NotNullWhen(true)] out INamedTypeSymbol? moduleSymbol)
+    {
+        var assemblyModuleName = $"{assemblySymbol.Name}.Enhanced.DependencyInjection.{ModuleClass}";
+        moduleSymbol = assemblySymbol.GetTypeByMetadataName(assemblyModuleName);
+        return moduleSymbol != null;
     }
 }
