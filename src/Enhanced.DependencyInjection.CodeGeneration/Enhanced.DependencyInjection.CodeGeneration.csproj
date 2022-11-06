@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <IncludeCompat>true</IncludeCompat>
     <IncludeCopyLocalFilesOutputGroup>true</IncludeCopyLocalFilesOutputGroup>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>

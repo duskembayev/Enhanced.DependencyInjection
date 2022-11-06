@@ -6,10 +6,12 @@
     <Nullable>enable</Nullable>
     <IncludeCompat>false</IncludeCompat>
     <IsPackable>false</IsPackable>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Enhanced.DependencyInjection.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(IncludeCompat)' == 'true'">
-    <Compile Include="$(MSBuildThisFileDirectory)\compat\**\*.cs" LinkBase=".compat" />
+    <Compile Include="$(MSBuildThisFileDirectory)compat\**\*.cs" LinkBase=".compat" />
   </ItemGroup>
 
 </Project>
