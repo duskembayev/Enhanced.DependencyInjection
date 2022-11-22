@@ -62,6 +62,23 @@ public class ContainerEntryAttributeProcessor : IIncrementalGenerator
         ctx.AddSource(
             $"{ModuleClass}.g.cs",
             GetModuleText(ns, tn, referenceModules, registrations, ctx.CancellationToken));
+
+        ctx.AddSource($"{ModuleClass}.Extensions.g.cs", @$"
+using Enhanced.DependencyInjection.Extensions;
+
+namespace {ns} {{
+    /// <summary>
+    /// Add generated module of current assembly to <see cref=""IServiceCollection"" />.
+    /// </summary>
+    /// <param name=""this"">Collection of service descriptors.</param>
+    /// <returns>Collection of service descriptors.</returns>
+    internal static class {ModuleClass}Extensions {{
+        public static global::Microsoft.Extensions.DependencyInjection.IServiceCollection AddEnhancedModules(this global::Microsoft.Extensions.DependencyInjection.IServiceCollection @this) {{
+            @this.Module<ContainerModule>();
+            return @this;
+        }}
+    }}
+}}");
     }
 
     private static string GetModuleText(string ns,

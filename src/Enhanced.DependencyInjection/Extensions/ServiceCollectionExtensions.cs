@@ -55,31 +55,4 @@ public static class ServiceCollectionExtensions
         var module = new TModule();
         module.AddEntries(@this);
     }
-
-    /// <summary>
-    /// Add generated module of current assembly to <see cref="IServiceCollection" />.
-    /// </summary>
-    /// <param name="this">Collection of service descriptors.</param>
-    /// <returns>Collection of service descriptors.</returns>
-    /// <exception cref="ApplicationException">Throws exception when current assembly module could not be resolved.</exception>
-    public static IServiceCollection AddEnhancedModules(this IServiceCollection @this)
-    {
-        var callingAssembly = Assembly.GetCallingAssembly();
-        var callingAssemblyName = callingAssembly
-            .GetName()
-            .Name;
-
-        if (callingAssemblyName is null)
-            throw new InvalidOperationException();
-
-        var callingAssemblyModuleName = $"{callingAssemblyName}.Enhanced.DependencyInjection.ContainerModule";
-        var moduleType = callingAssembly.GetType(callingAssemblyModuleName);
-
-        if (moduleType is null || Activator.CreateInstance(moduleType) is not IContainerModule module)
-            throw new ApplicationException(
-                $"Container module not found. Expected type: \"{callingAssemblyModuleName}\"");
-
-        module.AddEntries(@this);
-        return @this;
-    }
 }

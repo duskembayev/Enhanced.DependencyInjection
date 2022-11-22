@@ -1,4 +1,4 @@
-﻿using Enhanced.DependencyInjection.Extensions;
+﻿using Sample.Enhanced.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace Sample;
