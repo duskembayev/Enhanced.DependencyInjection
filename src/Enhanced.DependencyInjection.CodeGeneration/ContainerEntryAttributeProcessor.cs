@@ -47,7 +47,15 @@ public class ContainerEntryAttributeProcessor : IIncrementalGenerator
         Compilation compilation,
         ImmutableArray<DiRegistration> registrations)
     {
-        var ns = $"{compilation.AssemblyName}.Enhanced.DependencyInjection";
+        var rootNamespace = compilation.AssemblyName?.Replace(' ', '_');
+
+        if (rootNamespace is null)
+        {
+            ctx.ReportDiagnostic(Diagnostics.ECHDI02(DiagnosticSeverity.Error));
+            return;
+        }
+
+        var ns = $"{rootNamespace}.Enhanced.DependencyInjection";
         var tn = new TypeNames(compilation, ctx.ReportDiagnostic);
         var referenceModules = new List<INamedTypeSymbol>();
 
