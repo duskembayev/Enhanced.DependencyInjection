@@ -2,5 +2,5 @@
 
 internal interface IRegistration
 {
-    void Write(TextWriter writer, TypeNames tn);
+    void Write(TextWriter writer, ModuleContext ctx);
 }

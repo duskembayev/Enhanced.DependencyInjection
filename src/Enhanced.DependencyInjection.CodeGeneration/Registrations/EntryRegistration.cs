@@ -1,6 +1,6 @@
 ﻿namespace Enhanced.DependencyInjection.CodeGeneration.Registrations;
 
-internal sealed class EntryRegistration : IRegistration
+internal sealed class EntryRegistration : RegistrationWithDiagnostics
 {
     private readonly ServiceLifetime _lifetime;
     private readonly ClassDeclarationSyntax _implType;
@@ -16,13 +16,18 @@ internal sealed class EntryRegistration : IRegistration
         _interfaces = interfaces;
     }
 
-    public void Write(TextWriter writer, TypeNames tn)
+    public override void Write(TextWriter writer, ModuleContext ctx)
     {
-        var serviceLifetimeEnumName = tn.ServiceLifetimeEnumName;
+        WriteCore(writer);
+        base.Write(writer, ctx);
+    }
+
+    private void WriteCore(TextWriter writer)
+    {
         var ns = _implType.GetNamespace();
 
         writer.Write("sc.Entry<global::{0}.{1}>(", ns, _implType.Identifier.ValueText);
-        writer.Write("{0}.{1:G}", serviceLifetimeEnumName, _lifetime);
+        writer.Write("{0}.{1:G}", TN.GlobServiceLifetimeEnum, _lifetime);
 
         foreach (var @interface in _interfaces)
         {
@@ -33,22 +38,32 @@ internal sealed class EntryRegistration : IRegistration
         writer.WriteLine(");");
     }
 
-    public static IRegistration? Resolve(
+    public static IRegistration Create(
         AttributeSyntax attribute,
         ClassDeclarationSyntax classDeclaration,
-        SemanticModel model)
+        GeneratorSyntaxContext ctx)
     {
+        var model = ctx.SemanticModel;
+
         if (attribute.ArgumentList is not {Arguments.Count: >= 1})
-            return null;
+            return CreateDefinitionError(attribute);
 
         if (!attribute.TryGetEnumValue<ServiceLifetime>(0, model, out var serviceLifetime))
-            return null;
+            return CreateDefinitionError(attribute);
 
         var interfaces = attribute.ArgumentList.Arguments
             .FindTypeOfExpressions(1)
             .Select(t => model.GetTypeInfo(t).Type!)
             .ToImmutableArray();
 
+        if (interfaces.Length != attribute.ArgumentList.Arguments.Count - 1)
+            return CreateDefinitionError(attribute);
+
         return new EntryRegistration(serviceLifetime.Value, classDeclaration, interfaces);
+    }
+
+    private static ErrorRegistration CreateDefinitionError(AttributeSyntax attribute)
+    {
+        return new ErrorRegistration(Diagnostics.ECHDI03(attribute.GetLocation(), DiagnosticSeverity.Error));
     }
 }

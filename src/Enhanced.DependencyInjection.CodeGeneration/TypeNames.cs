@@ -1,49 +1,25 @@
 ﻿namespace Enhanced.DependencyInjection.CodeGeneration;
 
-internal sealed class TypeNames
+internal static class TypeNames
 {
-    private const string ModuleInterface = "Enhanced.DependencyInjection.Modules.IContainerModule";
-    private const string GeneratedCodeAttribute = "System.CodeDom.Compiler.GeneratedCodeAttribute";
-    private const string ServiceCollectionInterface = "Microsoft.Extensions.DependencyInjection.IServiceCollection";
-    private const string ServiceLifetimeEnum = "Microsoft.Extensions.DependencyInjection.ServiceLifetime";
+    public const string GlobModuleInterface =
+        "global::Enhanced.DependencyInjection.Modules.IContainerModule";
 
-    public TypeNames(Compilation compilation, Action<Diagnostic> diagnosticHandler)
-    {
-        GeneratedCodeAttributeName = compilation
-                                         .GetTypeByMetadataName(GeneratedCodeAttribute)
-                                         ?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
-                                     ?? string.Empty;
+    public const string GlobGeneratedCodeAttribute =
+        "global::System.CodeDom.Compiler.GeneratedCodeAttribute";
 
-        if (string.IsNullOrEmpty(GeneratedCodeAttribute))
-            diagnosticHandler(Diagnostics.ECHDI01(GeneratedCodeAttribute, DiagnosticSeverity.Error));
+    public const string GlobServiceCollectionInterface =
+        "global::Microsoft.Extensions.DependencyInjection.IServiceCollection";
 
-        ModuleInterfaceName = compilation
-                                  .GetTypeByMetadataName(ModuleInterface)
-                                  ?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
-                              ?? string.Empty;
+    public const string GlobServiceLifetimeEnum =
+        "global::Microsoft.Extensions.DependencyInjection.ServiceLifetime";
 
-        if (string.IsNullOrEmpty(ModuleInterfaceName))
-            diagnosticHandler(Diagnostics.ECHDI01(ModuleInterface, DiagnosticSeverity.Error));
+    public const string ModuleClass =
+        "ContainerModule";
 
-        ServiceCollectionName = compilation
-                                    .GetTypeByMetadataName(ServiceCollectionInterface)
-                                    ?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
-                                ?? string.Empty;
+    public const string ContainerEntryAttribute =
+        "Enhanced.DependencyInjection.ContainerEntryAttribute";
 
-        if (string.IsNullOrEmpty(ServiceCollectionName))
-            diagnosticHandler(Diagnostics.ECHDI01(ServiceCollectionInterface, DiagnosticSeverity.Error));
-
-        ServiceLifetimeEnumName = compilation
-                                      .GetTypeByMetadataName(ServiceLifetimeEnum)
-                                      ?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
-                                  ?? string.Empty;
-
-        if (string.IsNullOrEmpty(ServiceLifetimeEnumName))
-            diagnosticHandler(Diagnostics.ECHDI01(ServiceLifetimeEnum, DiagnosticSeverity.Error));
-    }
-
-    public string GeneratedCodeAttributeName { get; }
-    public string ServiceLifetimeEnumName { get; }
-    public string ServiceCollectionName { get; }
-    public string ModuleInterfaceName { get; }
+    public const string ExtensionsNamespace =
+        "Enhanced.DependencyInjection.Extensions";
 }
