@@ -7,6 +7,7 @@ namespace Enhanced.DependencyInjection.Extensions;
 /// <summary>
 /// Extension methods to <see cref="IServiceCollection" />.
 /// </summary>
+[EditorBrowsable(EditorBrowsableState.Never)]
 public static class ServiceCollectionExtensions
 {
     /// <summary>

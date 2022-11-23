@@ -20,7 +20,7 @@ public sealed class ContainerEntryAttribute : Attribute
     /// Define implementation entry lifetime and implemented services.
     /// </summary>
     /// <param name="lifetime">Specifies the lifetime of a service.</param>
-    /// <param name="interface0">The Type of the service.   </param>
+    /// <param name="interface0">The Type of the service.</param>
     /// <param name="interfaces">Additional types of the service.</param>
     public ContainerEntryAttribute(ServiceLifetime lifetime, Type interface0, params Type[] interfaces)
     {
