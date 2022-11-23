@@ -7,13 +7,26 @@
 public sealed class ContainerEntryAttribute : Attribute
 {
     /// <summary>
+    /// Define implementation entry lifetime.
+    /// </summary>
+    /// <param name="lifetime">Specifies the lifetime of a service.</param>
+    public ContainerEntryAttribute(ServiceLifetime lifetime)
+    {
+        Lifetime = lifetime;
+        Interface0 = null;
+        Interfaces = Array.Empty<Type>();
+    }
+
+    /// <summary>
     /// Define implementation entry lifetime and implemented service.
     /// </summary>
     /// <param name="lifetime">Specifies the lifetime of a service.</param>
     /// <param name="interface0">The Type of the service.</param>
     public ContainerEntryAttribute(ServiceLifetime lifetime, Type interface0)
-        : this(lifetime, interface0, Array.Empty<Type>())
     {
+        Lifetime = lifetime;
+        Interface0 = interface0;
+        Interfaces = Array.Empty<Type>();
     }
 
     /// <summary>

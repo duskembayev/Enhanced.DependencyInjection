@@ -9,8 +9,18 @@ namespace Enhanced.DependencyInjection.CodeGeneration.Extensions
             SemanticModel semanticModel,
             string expectedName)
         {
-            var actualName = semanticModel.GetSymbolInfo(@this).Symbol?.ContainingType.ToDisplayString();
+            var actualName = GetTypeFullName(@this, semanticModel);
             return expectedName == actualName;
+        }
+
+        public static string? GetTypeFullName(this SyntaxNode @this, SemanticModel semanticModel)
+        {
+            return semanticModel.GetSymbolInfo(@this).Symbol?.ContainingType.ToDisplayString();
+        }
+
+        public static bool IsClassWithAttribute(this SyntaxNode @this, CancellationToken cancellationToken)
+        {
+            return @this is ClassDeclarationSyntax {AttributeLists.Count: > 0};
         }
 
         internal static bool TryGetEnumValue<TEnum>(

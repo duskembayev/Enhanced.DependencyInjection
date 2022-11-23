@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Reflection;
 using Enhanced.DependencyInjection.Modules;
 
 namespace Enhanced.DependencyInjection.Extensions;
@@ -11,6 +10,19 @@ namespace Enhanced.DependencyInjection.Extensions;
 public static class ServiceCollectionExtensions
 {
     /// <summary>
+    /// Add service to <see cref="IServiceCollection" /> as self.
+    /// </summary>
+    /// <param name="this">Collection of service descriptors.</param>
+    /// <param name="lifetime">Specifies the lifetime of a service.</param>
+    /// <typeparam name="TImpl">The Type implementing the service.</typeparam>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public static void Entry<TImpl>(this IServiceCollection @this, ServiceLifetime lifetime)
+        where TImpl : class
+    {
+        @this.Add(new ServiceDescriptor(typeof(TImpl), typeof(TImpl), lifetime));
+    }
+
+    /// <summary>
     /// Add service to <see cref="IServiceCollection" />.
     /// </summary>
     /// <param name="this">Collection of service descriptors.</param>
@@ -18,8 +30,7 @@ public static class ServiceCollectionExtensions
     /// <param name="interface0">The Type of the service.</param>
     /// <typeparam name="TImpl">The Type implementing the service.</typeparam>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static void Entry<TImpl>(this IServiceCollection @this,
-        ServiceLifetime lifetime, Type interface0)
+    public static void Entry<TImpl>(this IServiceCollection @this, ServiceLifetime lifetime, Type interface0)
         where TImpl : class
     {
         @this.Add(new ServiceDescriptor(interface0, typeof(TImpl), lifetime));

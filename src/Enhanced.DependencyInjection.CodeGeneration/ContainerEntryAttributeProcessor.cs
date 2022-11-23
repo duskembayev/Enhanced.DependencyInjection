@@ -1,6 +1,7 @@
 ﻿using System.CodeDom.Compiler;
 using System.Diagnostics;
 using System.Reflection;
+using Enhanced.DependencyInjection.CodeGeneration.Registrations;
 
 namespace Enhanced.DependencyInjection.CodeGeneration;
 
@@ -31,7 +32,7 @@ public class ContainerEntryAttributeProcessor : IIncrementalGenerator
 #endif
 
         var classDeclarations = context.SyntaxProvider
-            .CreateSyntaxProvider(IsClassWithAttribute, GetRegistration)
+            .CreateSyntaxProvider((n, t) => n.IsClassWithAttribute(t), GetRegistration)
             .WhereNotNull()
             .Collect();
 
@@ -45,7 +46,7 @@ public class ContainerEntryAttributeProcessor : IIncrementalGenerator
     private static void Generate(
         SourceProductionContext ctx,
         Compilation compilation,
-        ImmutableArray<DiRegistration> registrations)
+        ImmutableArray<IRegistration> registrations)
     {
         var rootNamespace = compilation.AssemblyName?.Replace(' ', '_');
 
@@ -92,7 +93,7 @@ namespace {ns} {{
     private static string GetModuleText(string ns,
         TypeNames tn,
         IReadOnlyCollection<INamedTypeSymbol> modules,
-        ImmutableArray<DiRegistration> registrations,
+        ImmutableArray<IRegistration> registrations,
         CancellationToken cancellationToken)
     {
         using var textWriter = new StringWriter();
@@ -117,7 +118,7 @@ namespace {ns} {{
                 foreach (var registration in registrations)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    WriteRegistration(registration, indentedWriter, tn.ServiceLifetimeEnumName);
+                    registration.Write(indentedWriter, tn);
                 }
             }
         }
@@ -134,26 +135,7 @@ namespace {ns} {{
             module.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
     }
 
-    private static void WriteRegistration(
-        DiRegistration registration,
-        TextWriter indentedWriter,
-        string serviceLifetimeEnumName)
-    {
-        var ns = registration.ImplType.GetNamespace();
-
-        indentedWriter.Write("sc.Entry<global::{0}.{1}>(", ns, registration.ImplType.Identifier.ValueText);
-        indentedWriter.Write("{0}.{1:G}", serviceLifetimeEnumName, registration.Lifetime);
-
-        foreach (var @interface in registration.Interfaces)
-        {
-            var interfaceFullName = @interface.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-            indentedWriter.Write(", typeof({0})", interfaceFullName);
-        }
-
-        indentedWriter.WriteLine(");");
-    }
-
-    private static DiRegistration? GetRegistration(GeneratorSyntaxContext ctx, CancellationToken cancellationToken)
+    private static IRegistration? GetRegistration(GeneratorSyntaxContext ctx, CancellationToken cancellationToken)
     {
         var model = ctx.SemanticModel;
         var classDeclaration = (ClassDeclarationSyntax) ctx.Node;
@@ -163,32 +145,20 @@ namespace {ns} {{
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            if (attribute.ArgumentList is not {Arguments.Count: >= 2})
+            var attributeType = attribute.GetTypeFullName(model);
+            var registration = attributeType switch
+            {
+                ContainerEntryAttribute => EntryRegistration.Resolve(attribute, classDeclaration, model),
+                _ => null
+            };
+            
+            if (registration is null)
                 continue;
 
-            if (!attribute.IsTypeFullName(model, ContainerEntryAttribute))
-                continue;
-
-            if (!attribute.TryGetEnumValue<ServiceLifetime>(0, model, out var serviceLifetime))
-                continue;
-
-            var interfaces = attribute.ArgumentList.Arguments
-                .FindTypeOfExpressions(1)
-                .Select(t => model.GetTypeInfo(t).Type!)
-                .ToImmutableArray();
-
-            if (interfaces.Length == 0)
-                continue;
-
-            return new DiRegistration(serviceLifetime.Value, classDeclaration, interfaces);
+            return registration;
         }
 
         return null;
-    }
-
-    private static bool IsClassWithAttribute(SyntaxNode node, CancellationToken cancellationToken)
-    {
-        return node is ClassDeclarationSyntax {AttributeLists.Count: > 0};
     }
 
     private static bool TryGetContainerModule(
