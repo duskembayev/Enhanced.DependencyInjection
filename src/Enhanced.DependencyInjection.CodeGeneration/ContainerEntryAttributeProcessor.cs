@@ -145,6 +145,10 @@ public class ContainerEntryAttributeProcessor : IIncrementalGenerator
             var registration = attributeType switch
             {
                 TN.ContainerEntryAttribute => EntryRegistration.Create(attribute, classDeclaration, ctx),
+                TN.ContainerEntryByFactoryAttribute => EntryByFactoryRegistration.Create(
+                    attribute,
+                    classDeclaration,
+                    ctx),
                 _ => null
             };
 

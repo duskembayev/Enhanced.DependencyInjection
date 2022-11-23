@@ -18,3 +18,12 @@ internal sealed class RandomService : IRandomService
         return _random.Next();
     }
 }
+
+[ContainerEntryByFactory(ServiceLifetime.Singleton)]
+internal sealed class ServiceWithArgument
+{
+    [FactoryConstructor]
+    public ServiceWithArgument([FactoryArgument] int seed, IRandomService randomService)
+    {
+    }
+}

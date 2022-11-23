@@ -20,6 +20,15 @@ internal static class TypeNames
     public const string ContainerEntryAttribute =
         "Enhanced.DependencyInjection.ContainerEntryAttribute";
 
+    public const string ContainerEntryByFactoryAttribute =
+        "Enhanced.DependencyInjection.ContainerEntryByFactoryAttribute";
+
+    public const string FactoryConstructorAttribute =
+        "Enhanced.DependencyInjection.FactoryConstructorAttribute";
+
+    public const string FactoryArgumentAttribute =
+        "Enhanced.DependencyInjection.FactoryArgumentAttribute";
+
     public const string ExtensionsNamespace =
         "Enhanced.DependencyInjection.Extensions";
 }
