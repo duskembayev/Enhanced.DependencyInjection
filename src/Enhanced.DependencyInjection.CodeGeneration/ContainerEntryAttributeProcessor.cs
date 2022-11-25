@@ -47,14 +47,13 @@ public class ContainerEntryAttributeProcessor : IIncrementalGenerator
 
         if (rootNamespace is null)
         {
-            ctx.ReportDiagnostic(Diagnostics.ECHDI02(DiagnosticSeverity.Error));
+            ctx.ReportDiagnostic(Diagnostics.ECHDI02());
             return;
         }
 
         var moduleContext = new ModuleContext(
             $"{rootNamespace}.Enhanced.DependencyInjection",
-            ctx.ReportDiagnostic,
-            ctx.CancellationToken
+            ctx
         );
 
         var referenceModules = GetReferenceModules(compilation, ctx.CancellationToken);
@@ -144,11 +143,8 @@ public class ContainerEntryAttributeProcessor : IIncrementalGenerator
             var attributeType = attribute.GetTypeFullName(model);
             var registration = attributeType switch
             {
-                TN.ContainerEntryAttribute => EntryRegistration.Create(attribute, classDeclaration, ctx),
-                TN.ContainerEntryByFactoryAttribute => EntryByFactoryRegistration.Create(
-                    attribute,
-                    classDeclaration,
-                    ctx),
+                TN.ContainerEntryAttribute => EntryRegistration.Create(attribute, ctx),
+                TN.ContainerEntryByFactoryAttribute => EntryByFactoryRegistration.Create(attribute, ctx),
                 _ => null
             };
 
@@ -180,6 +176,7 @@ namespace {ns} {{
     /// </summary>
     /// <param name=""this"">Collection of service descriptors.</param>
     /// <returns>Collection of service descriptors.</returns>
+    [{TN.GlobGeneratedCodeAttribute}(""{ToolName}"", ""{ToolVersion}"")]
     internal static class {TN.ModuleClass}Extensions {{
         public static global::Microsoft.Extensions.DependencyInjection.IServiceCollection AddEnhancedModules(this global::Microsoft.Extensions.DependencyInjection.IServiceCollection @this) {{
             @this.Module<ContainerModule>();

@@ -26,4 +26,9 @@ internal sealed class ServiceWithArgument
     public ServiceWithArgument([FactoryArgument] int seed, IRandomService randomService)
     {
     }
+
+    [global::Enhanced.DependencyInjection.FactoryConstructor]
+    public ServiceWithArgument()
+    {
+    }
 }

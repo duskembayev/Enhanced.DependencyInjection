@@ -38,12 +38,10 @@ internal sealed class EntryRegistration : RegistrationWithDiagnostics
         writer.WriteLine(");");
     }
 
-    public static IRegistration Create(
-        AttributeSyntax attribute,
-        ClassDeclarationSyntax classDeclaration,
-        GeneratorSyntaxContext ctx)
+    public static IRegistration Create(AttributeSyntax attribute, GeneratorSyntaxContext ctx)
     {
         var model = ctx.SemanticModel;
+        var classDeclaration = (ClassDeclarationSyntax) ctx.Node;
 
         if (attribute.ArgumentList is not {Arguments.Count: >= 1})
             return CreateDefinitionError(attribute);
@@ -64,6 +62,6 @@ internal sealed class EntryRegistration : RegistrationWithDiagnostics
 
     private static ErrorRegistration CreateDefinitionError(AttributeSyntax attribute)
     {
-        return new ErrorRegistration(Diagnostics.ECHDI03(attribute.GetLocation(), DiagnosticSeverity.Error));
+        return new ErrorRegistration(Diagnostics.ECHDI03(attribute.GetLocation()));
     }
 }
