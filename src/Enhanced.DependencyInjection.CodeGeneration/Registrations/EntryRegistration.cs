@@ -25,8 +25,9 @@ internal sealed class EntryRegistration : RegistrationWithDiagnostics
     private void WriteCore(TextWriter writer)
     {
         var ns = _implType.GetNamespace();
+        var implTypeName = _implType.Identifier.ValueText;
 
-        writer.Write("sc.Entry<global::{0}.{1}>(", ns, _implType.Identifier.ValueText);
+        writer.Write("sc.Entry<global::{0}.{1}>(", ns, implTypeName);
         writer.Write("{0}.{1:G}", TN.GlobServiceLifetimeEnum, _lifetime);
 
         foreach (var @interface in _interfaces)

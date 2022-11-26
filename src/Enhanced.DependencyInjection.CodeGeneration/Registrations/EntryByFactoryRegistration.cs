@@ -5,34 +5,41 @@ namespace Enhanced.DependencyInjection.CodeGeneration.Registrations;
 internal sealed class EntryByFactoryRegistration : RegistrationWithDiagnostics
 {
     private readonly ServiceLifetime _factoryLifetime;
-    private readonly ClassDeclarationSyntax _classDeclaration;
+    private readonly ClassDeclarationSyntax _implType;
     private readonly ImmutableArray<ITypeSymbol> _interfaces;
     private readonly ConstructorDeclarationSyntax? _ctorDeclaration;
+    private readonly IReadOnlyCollection<ParameterSyntax> _arguments;
 
     private EntryByFactoryRegistration(
         ServiceLifetime factoryLifetime,
-        ClassDeclarationSyntax classDeclaration,
+        ClassDeclarationSyntax implType,
         ImmutableArray<ITypeSymbol> interfaces,
-        ConstructorDeclarationSyntax? ctorDeclaration)
+        ConstructorDeclarationSyntax? ctorDeclaration,
+        IReadOnlyCollection<ParameterSyntax> arguments)
     {
         _factoryLifetime = factoryLifetime;
-        _classDeclaration = classDeclaration;
+        _implType = implType;
         _interfaces = interfaces;
         _ctorDeclaration = ctorDeclaration;
+        _arguments = arguments;
     }
 
     public override void Write(TextWriter writer, ModuleContext ctx)
     {
-        ;
+        var ns = _implType.GetNamespace();
+        var implTypeName = _implType.Identifier.ValueText;
+        
+        
+        
         base.Write(writer, ctx);
     }
 
     public static IRegistration Create(AttributeSyntax attribute, GeneratorSyntaxContext ctx)
     {
         var model = ctx.SemanticModel;
-        var classDeclaration = (ClassDeclarationSyntax)ctx.Node;
+        var classDeclaration = (ClassDeclarationSyntax) ctx.Node;
 
-        if (attribute.ArgumentList is not { Arguments.Count: >= 1 })
+        if (attribute.ArgumentList is not {Arguments.Count: >= 1})
             return CreateDefinitionError(attribute);
 
         if (!attribute.TryGetEnumValue<ServiceLifetime>(0, model, out var factoryLifetime))
@@ -52,7 +59,11 @@ internal sealed class EntryByFactoryRegistration : RegistrationWithDiagnostics
         if (!TryGetSingleOrDefaultCtor(classDeclaration, model, out var ctorDeclaration))
             return new ErrorRegistration(Diagnostics.ECHDI05(classDeclaration.GetLocation()));
 
-        return new EntryByFactoryRegistration(factoryLifetime.Value, classDeclaration, interfaces, ctorDeclaration);
+        var arguments = ctorDeclaration != null
+            ? GetArguments(ctorDeclaration, model)
+            : Array.Empty<ParameterSyntax>();
+
+        return new EntryByFactoryRegistration(factoryLifetime.Value, classDeclaration, interfaces, ctorDeclaration, arguments);
     }
 
     private static bool TryGetSingleOrDefaultCtor(
@@ -71,6 +82,15 @@ internal sealed class EntryByFactoryRegistration : RegistrationWithDiagnostics
 
         ctorDeclaration = finder.Result.SingleOrDefault();
         return true;
+    }
+
+    private static IReadOnlyCollection<ParameterSyntax> GetArguments(
+        ConstructorDeclarationSyntax ctorDeclaration,
+        SemanticModel model)
+    {
+        var finder = new FactoryArgumentFinder(model);
+        ctorDeclaration.Accept(finder);
+        return finder.Result;
     }
 
     private static ErrorRegistration CreateDefinitionError(AttributeSyntax attribute)

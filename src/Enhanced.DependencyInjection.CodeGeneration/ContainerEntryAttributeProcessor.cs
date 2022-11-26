@@ -1,6 +1,5 @@
 ﻿using System.CodeDom.Compiler;
 using System.Diagnostics;
-using System.Reflection;
 using Enhanced.DependencyInjection.CodeGeneration.Registrations;
 
 namespace Enhanced.DependencyInjection.CodeGeneration;
@@ -8,19 +7,6 @@ namespace Enhanced.DependencyInjection.CodeGeneration;
 [Generator(LanguageNames.CSharp)]
 public class ContainerEntryAttributeProcessor : IIncrementalGenerator
 {
-    private static readonly string ToolName;
-    private static readonly string ToolVersion;
-
-    static ContainerEntryAttributeProcessor()
-    {
-        var assemblyName = Assembly
-            .GetExecutingAssembly()
-            .GetName();
-
-        ToolName = assemblyName.Name;
-        ToolVersion = assemblyName.Version.ToString(3);
-    }
-
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
 #if DEBUG
@@ -99,7 +85,7 @@ public class ContainerEntryAttributeProcessor : IIncrementalGenerator
 
         using (indentedWriter.BeginScope("namespace {0}", ctx.Ns))
         {
-            indentedWriter.WriteLine("[{0}(\"{1}\", \"{2}\")]", TN.GlobGeneratedCodeAttribute, ToolName, ToolVersion);
+            indentedWriter.WriteLine("[{0}(\"{1}\", \"{2}\")]", TN.GlobGeneratedCodeAttribute, Tool.Name, Tool.Version);
 
             using (indentedWriter.BeginScope("public sealed class {0} : {1}", TN.ModuleClass, TN.GlobModuleInterface))
             using (indentedWriter.BeginScope("public void AddEntries({0} sc)", TN.GlobServiceCollectionInterface))
@@ -176,7 +162,7 @@ namespace {ns} {{
     /// </summary>
     /// <param name=""this"">Collection of service descriptors.</param>
     /// <returns>Collection of service descriptors.</returns>
-    [{TN.GlobGeneratedCodeAttribute}(""{ToolName}"", ""{ToolVersion}"")]
+    [{TN.GlobGeneratedCodeAttribute}(""{Tool.Name}"", ""{Tool.Version}"")]
     internal static class {TN.ModuleClass}Extensions {{
         public static global::Microsoft.Extensions.DependencyInjection.IServiceCollection AddEnhancedModules(this global::Microsoft.Extensions.DependencyInjection.IServiceCollection @this) {{
             @this.Module<ContainerModule>();
