@@ -1,6 +1,6 @@
 # Enhanced.DependencyInjection 
 
-![Nuget](https://img.shields.io/nuget/v/Enhanced.DependencyInjection?style=flat-square)
+[![Nuget](https://img.shields.io/nuget/v/Enhanced.DependencyInjection?style=flat-square)](https://www.nuget.org/packages/Enhanced.DependencyInjection)
 
 `Enhanced.DependencyInjection` is a NuGet package for simplified dependency registration in .NET Core DI container. It uses C# attributes and a source generator for explicit registration, making the process more understandable and faster. It makes applications more resilient and easily extensible, and welcomes community contributions.
 
