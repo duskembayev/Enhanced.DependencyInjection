@@ -1,6 +1,16 @@
 ﻿namespace Enhanced.DependencyInjection.CodeGeneration.Registrations;
 
-internal sealed class ErrorRegistration : RegistrationWithDiagnostics
+internal sealed class ErrorRegistration : IRegistration
 {
-    public ErrorRegistration(Diagnostic diagnostic) => Report(diagnostic);
+    private readonly Diagnostic _diagnostic;
+
+    public ErrorRegistration(Diagnostic diagnostic)
+    {
+        _diagnostic = diagnostic;
+    }
+
+    public void Write(TextWriter writer, ModuleContext ctx)
+    {
+        ctx.Report(_diagnostic);
+    }
 }

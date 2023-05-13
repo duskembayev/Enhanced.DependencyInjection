@@ -17,8 +17,17 @@ internal static class TypeNames
     public const string ModuleClass =
         "ContainerModule";
 
-    public const string ContainerEntryAttribute =
-        "Enhanced.DependencyInjection.ContainerEntryAttribute";
+    public const string ContainerEntryAttributeName =
+        "ContainerEntryAttribute";
+
+    public const string SingletonAttributeName =
+        "SingletonAttribute";
+
+    public const string ScopedAttributeName =
+        "ScopedAttribute";
+
+    public const string TransientAttributeName =
+        "TransientAttribute";
 
     public const string ExtensionsNamespace =
         "Enhanced.DependencyInjection.Extensions";

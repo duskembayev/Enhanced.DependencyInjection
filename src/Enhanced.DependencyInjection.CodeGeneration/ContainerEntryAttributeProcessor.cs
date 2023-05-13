@@ -27,7 +27,9 @@ public class ContainerEntryAttributeProcessor : IIncrementalGenerator
         Debugger.Launch();
 #endif
         var classDeclarations = context.SyntaxProvider
-            .CreateSyntaxProvider((n, t) => n.IsClassWithAttribute(t), GetRegistration)
+            .CreateSyntaxProvider(
+                static (n, t) => n.IsClassWithAttribute(t),
+                static (syntaxContext, token) => GetRegistration(syntaxContext, token))
             .WhereNotNull()
             .Collect();
 
@@ -136,25 +138,57 @@ public class ContainerEntryAttributeProcessor : IIncrementalGenerator
         var model = ctx.SemanticModel;
         var classDeclaration = (ClassDeclarationSyntax) ctx.Node;
 
+        IRegistration? result = null;
+
         foreach (var attributeList in classDeclaration.AttributeLists)
         foreach (var attribute in attributeList.Attributes)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var attributeType = attribute.GetTypeFullName(model);
+            var attributeType = attribute.GetSymbolType(model);
             var registration = attributeType switch
             {
-                TN.ContainerEntryAttribute => EntryRegistration.Create(attribute, classDeclaration, ctx),
+                {Name: TN.ContainerEntryAttributeName, IsGenericType: false}
+                    => EntryRegistration.CreateFromPlainEntryAttribute(
+                        attribute, classDeclaration, ctx),
+                {Name: TN.ContainerEntryAttributeName, IsGenericType: true}
+                    => EntryRegistration.CreateFromGenericEntryAttribute(
+                        attribute, attributeType, classDeclaration, ctx),
+
+                {Name: TN.SingletonAttributeName, IsGenericType: false}
+                    => EntryRegistration.CreateFromPlainAttribute(
+                        ServiceLifetime.Singleton, attribute, classDeclaration, ctx),
+                {Name: TN.SingletonAttributeName, IsGenericType: true}
+                    => EntryRegistration.CreateFromGenericAttribute(
+                        ServiceLifetime.Singleton, attributeType, classDeclaration),
+
+                {Name: TN.ScopedAttributeName, IsGenericType: false}
+                    => EntryRegistration.CreateFromPlainAttribute(
+                        ServiceLifetime.Scoped, attribute, classDeclaration, ctx),
+                {Name: TN.ScopedAttributeName, IsGenericType: true}
+                    => EntryRegistration.CreateFromGenericAttribute(
+                        ServiceLifetime.Scoped, attributeType, classDeclaration),
+
+                {Name: TN.TransientAttributeName, IsGenericType: false}
+                    => EntryRegistration.CreateFromPlainAttribute(
+                        ServiceLifetime.Transient, attribute, classDeclaration, ctx),
+                {Name: TN.TransientAttributeName, IsGenericType: true}
+                    => EntryRegistration.CreateFromGenericAttribute(
+                        ServiceLifetime.Transient, attributeType, classDeclaration),
+
                 _ => null
             };
 
             if (registration is null)
                 continue;
 
-            return registration;
+            if (result is not null)
+                return new ErrorRegistration(Diagnostics.ECHDI04(attribute.GetLocation(), DiagnosticSeverity.Error));
+
+            result = registration;
         }
 
-        return null;
+        return result;
     }
 
     private static bool TryGetContainerModule(

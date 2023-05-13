@@ -15,7 +15,15 @@ namespace Enhanced.DependencyInjection.CodeGeneration.Extensions
 
         public static string? GetTypeFullName(this SyntaxNode @this, SemanticModel semanticModel)
         {
-            return semanticModel.GetSymbolInfo(@this).Symbol?.ContainingType.ToDisplayString();
+            var type = GetSymbolType(@this, semanticModel);
+            return type?.ToDisplayString();
+        }
+
+        public static INamedTypeSymbol? GetSymbolType(this SyntaxNode @this, SemanticModel semanticModel)
+        {
+            var symbolInfo = semanticModel.GetSymbolInfo(@this);
+            var symbol = symbolInfo.Symbol;
+            return symbol?.ContainingType;
         }
 
         public static bool IsClassWithAttribute(this SyntaxNode @this, CancellationToken cancellationToken)
