@@ -1,15 +1,17 @@
 ﻿namespace Enhanced.DependencyInjection;
 
 /// <summary>
-/// Attribute to declare implementation entry lifetime and implemented services.
+///     Attribute to declare implementation entry lifetime and implemented services.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
 public sealed class ContainerEntryAttribute : Attribute
 {
     /// <summary>
-    /// Define implementation entry lifetime.
+    ///     Define implementation entry lifetime.
     /// </summary>
-    /// <param name="lifetime">Specifies the lifetime of a service.</param>
+    /// <param name="lifetime">
+    ///     Specifies the lifetime of a service.
+    /// </param>
     public ContainerEntryAttribute(ServiceLifetime lifetime)
     {
         Lifetime = lifetime;
@@ -18,10 +20,14 @@ public sealed class ContainerEntryAttribute : Attribute
     }
 
     /// <summary>
-    /// Define implementation entry lifetime and implemented service.
+    ///     Define implementation entry lifetime and implemented service.
     /// </summary>
-    /// <param name="lifetime">Specifies the lifetime of a service.</param>
-    /// <param name="interface0">The Type of the service.</param>
+    /// <param name="lifetime">
+    ///     Specifies the lifetime of a service.
+    /// </param>
+    /// <param name="interface0">
+    ///     The Type of the service.
+    /// </param>
     public ContainerEntryAttribute(ServiceLifetime lifetime, Type interface0)
     {
         Lifetime = lifetime;
@@ -30,11 +36,17 @@ public sealed class ContainerEntryAttribute : Attribute
     }
 
     /// <summary>
-    /// Define implementation entry lifetime and implemented services.
+    ///     Define implementation entry lifetime and implemented services.
     /// </summary>
-    /// <param name="lifetime">Specifies the lifetime of a service.</param>
-    /// <param name="interface0">The Type of the service.</param>
-    /// <param name="interfaces">Additional types of the service.</param>
+    /// <param name="lifetime">
+    ///     Specifies the lifetime of a service.
+    /// </param>
+    /// <param name="interface0">
+    ///     The Type of the service.
+    /// </param>
+    /// <param name="interfaces">
+    ///     Additional types of the service.
+    /// </param>
     public ContainerEntryAttribute(ServiceLifetime lifetime, Type interface0, params Type[] interfaces)
     {
         Lifetime = lifetime;

@@ -7,7 +7,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 /// <summary>
 /// Specifies the lifetime of a service in an IServiceCollection.
 /// </summary>
-public enum ServiceLifetime
+internal enum ServiceLifetime
 {
     /// <summary>
     /// Specifies that a single instance of the service will be created.
