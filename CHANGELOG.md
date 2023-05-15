@@ -20,6 +20,6 @@ All notable changes to this project will be documented in this file.
 
 - Initial release
 
-[unreleased]: https://github.com/duskembayev/Enhanced.DependencyInjection/compare/1.1.0...HEAD
-[1.0.1]: https://github.com/duskembayev/Enhanced.DependencyInjection/compare/1.0.1...1.1.0
-[1.0.0]: https://github.com/duskembayev/Enhanced.DependencyInjection/compare/1.0.0-1.0.1
+[unreleased]: https://github.com/duskembayev/Enhanced.DependencyInjection/compare/1.0.1...HEAD
+[1.0.1]: https://github.com/duskembayev/Enhanced.DependencyInjection/compare/1.0.0...1.0.1
+[1.0.0]: https://github.com/duskembayev/Enhanced.DependencyInjection/releases/tag/1.0.0
