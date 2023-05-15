@@ -14,6 +14,7 @@
     <PackageTags>dependency injection, attribute, ioc, iservicecollection, services, module, registration, entry</PackageTags>
     <PackageIcon>icons/icon.png</PackageIcon>
     <PackageDescription>Provides the way to register services in IServiceCollection using attributes and code generators.</PackageDescription>
+    <CheckEolTargetFramework>false</CheckEolTargetFramework>
   </PropertyGroup>
 
   <ItemGroup>

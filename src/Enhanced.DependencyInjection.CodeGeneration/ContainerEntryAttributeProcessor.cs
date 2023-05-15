@@ -23,7 +23,7 @@ public class ContainerEntryAttributeProcessor : IIncrementalGenerator
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-#if DEBUG
+#if ENABLE_DEBUGGER
         Debugger.Launch();
 #endif
         var classDeclarations = context.SyntaxProvider

@@ -5,6 +5,11 @@
     <IncludeCompat>true</IncludeCompat>
     <IncludeCopyLocalFilesOutputGroup>true</IncludeCopyLocalFilesOutputGroup>
     <SignAssembly>true</SignAssembly>
+    <EnableDebugger>false</EnableDebugger>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(EnableDebugger)' == 'true'">
+    <DefineConstants>$(DefineConstants);ENABLE_DEBUGGER</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.5.0" PrivateAssets="all" />
   </ItemGroup>
   
   <ItemGroup>
