@@ -21,7 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleRef", "samples\Sample
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github-workflows", ".github-workflows", "{737C4AC9-791C-4C62-8C4E-ACDBC06C73CA}"
 	ProjectSection(SolutionItems) = preProject
-		.github\workflows\dotnet-build.yml = .github\workflows\dotnet-build.yml
+		.github\workflows\release.yml = .github\workflows\release.yml
+		.github\workflows\build.yml = .github\workflows\build.yml
 	EndProjectSection
 EndProject
 Global
