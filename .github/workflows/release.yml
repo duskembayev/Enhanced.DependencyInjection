@@ -65,7 +65,7 @@ jobs:
           name: nuget
           path: ./out
       - name: Add NuGet source
-        run: dotnet nuget add source {{ env.NUGET_SOURCE }} --name github
+        run: dotnet nuget add source ${{ env.NUGET_SOURCE }} --name github
       - name: Push NuGet package
         run: dotnet nuget push ./out/*.nupkg --source github --api-key ${{ secrets.GITHUB_TOKEN }}
 
@@ -85,7 +85,7 @@ jobs:
           name: nuget
           path: ./out
       - name: Add NuGet source
-        run: dotnet nuget add source {{ env.NUGET_SOURCE }} --name nuget.org
+        run: dotnet nuget add source ${{ env.NUGET_SOURCE }} --name nuget.org
       - name: Push NuGet package to NuGet.org
         run: dotnet nuget push ./out/*.nupkg --source nuget.org --api-key ${{ secrets.NUGET_API_KEY }}
   
