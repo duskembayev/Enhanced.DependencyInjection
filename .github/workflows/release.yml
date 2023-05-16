@@ -1,8 +1,6 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: Release
-
 on:
   workflow_dispatch:
     branches: [ "main" ]
@@ -17,6 +15,9 @@ on:
         description: 'Publish to NuGet.org'
         required: false
         default: false
+
+name: Release
+run_name: Release ${{ github.event.inputs.version }}
 
 env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
