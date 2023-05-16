@@ -1,0 +1,13 @@
+﻿<Project>
+    <PropertyGroup>
+        <ModuleNamespace Condition="'$(ModuleNamespace)' == ''">$(RootNamespace).Enhanced.DependencyInjection</ModuleNamespace>
+        <ModuleClassName Condition="'$(ModuleClassName)' == ''">ContainerModule</ModuleClassName>
+        <ModuleRegistrationMethodName Condition="'$(ModuleRegistrationMethodName)' == ''">AddEnhancedModules</ModuleRegistrationMethodName>
+        <GenerateModuleRegistrationMethod Condition="'$(GenerateModuleRegistrationMethod)' == ''">True</GenerateModuleRegistrationMethod>
+    </PropertyGroup>
+    <ItemGroup>
+        <CompilerVisibleProperty Include="ModuleNamespace"/>
+        <CompilerVisibleProperty Include="ModuleClassName"/>
+        <CompilerVisibleProperty Include="GenerateModuleRegistrationMethod"/>
+    </ItemGroup>
+</Project>

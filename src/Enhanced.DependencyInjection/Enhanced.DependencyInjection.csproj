@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Enhanced.DependencyInjection.CodeGeneration\Enhanced.DependencyInjection.CodeGeneration.csproj" ReferenceOutputAssembly="false" />
     <None Include="..\Enhanced.DependencyInjection.CodeGeneration\bin\$(Configuration)\netstandard2.0\Enhanced.DependencyInjection.CodeGeneration.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="Package.props" Pack="true" PackagePath="build" Visible="false" />
   </ItemGroup>
 
   <ItemGroup>

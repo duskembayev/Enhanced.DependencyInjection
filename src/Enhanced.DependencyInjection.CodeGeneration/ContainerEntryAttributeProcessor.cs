@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Reflection;
 using Enhanced.DependencyInjection.CodeGeneration.Registrations;
+using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Enhanced.DependencyInjection.CodeGeneration;
 
@@ -26,6 +27,7 @@ public class ContainerEntryAttributeProcessor : IIncrementalGenerator
 #if ENABLE_DEBUGGER
         Debugger.Launch();
 #endif
+
         var classDeclarations = context.SyntaxProvider
             .CreateSyntaxProvider(
                 static (n, t) => n.IsClassWithAttribute(t),
@@ -33,15 +35,17 @@ public class ContainerEntryAttributeProcessor : IIncrementalGenerator
             .WhereNotNull()
             .Collect();
 
-        var classesPerCompilation = context.CompilationProvider.Combine(classDeclarations);
+        var valueProvider = context.AnalyzerConfigOptionsProvider
+            .Combine(context.CompilationProvider)
+            .Combine(classDeclarations);
 
         context.RegisterSourceOutput(
-            classesPerCompilation,
-            static (ctx, source) => Generate(ctx, source.Left, source.Right));
+            valueProvider,
+            static (ctx, source) => Generate(ctx, source.Left.Left, source.Left.Right, source.Right));
     }
 
-    private static void Generate(
-        SourceProductionContext ctx,
+    private static void Generate(SourceProductionContext ctx,
+        AnalyzerConfigOptionsProvider options,
         Compilation compilation,
         ImmutableArray<IRegistration> registrations)
     {
