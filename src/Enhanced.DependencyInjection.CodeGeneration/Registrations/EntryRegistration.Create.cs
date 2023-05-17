@@ -2,7 +2,7 @@
 
 internal sealed partial class EntryRegistration
 {
-    public static IRegistration CreateFromPlainEntryAttribute(
+    internal static IRegistration CreateFromPlainEntryAttribute(
         AttributeSyntax attribute,
         ClassDeclarationSyntax classDeclaration,
         GeneratorSyntaxContext ctx)
@@ -16,7 +16,7 @@ internal sealed partial class EntryRegistration
         return FromPlainAttributeCore(lifetime.Value, ctx.SemanticModel, classDeclaration, attribute, 1);
     }
 
-    public static IRegistration CreateFromGenericEntryAttribute(
+    internal static IRegistration CreateFromGenericEntryAttribute(
         AttributeSyntax attribute,
         INamedTypeSymbol attributeType,
         ClassDeclarationSyntax classDeclaration,
@@ -31,7 +31,7 @@ internal sealed partial class EntryRegistration
         return FromGenericAttributeCore(lifetime.Value, classDeclaration, attributeType);
     }
 
-    public static IRegistration CreateFromPlainAttribute(
+    internal static IRegistration CreateFromPlainAttribute(
         ServiceLifetime lifetime,
         AttributeSyntax attribute,
         ClassDeclarationSyntax classDeclaration,
@@ -40,7 +40,7 @@ internal sealed partial class EntryRegistration
         return FromPlainAttributeCore(lifetime, ctx.SemanticModel, classDeclaration, attribute, 0);
     }
 
-    public static IRegistration CreateFromGenericAttribute(
+    internal static IRegistration CreateFromGenericAttribute(
         ServiceLifetime lifetime,
         INamedTypeSymbol attributeType,
         ClassDeclarationSyntax classDeclaration)

@@ -16,25 +16,16 @@ internal sealed partial class EntryRegistration : IRegistration
         _interfaces = interfaces;
     }
 
-    public void Write(TextWriter writer, ModuleContext ctx)
-    {
-        WriteCore(writer);
-    }
-
-    private void WriteCore(TextWriter writer)
+    void IRegistration.Write(TextWriter writer, ModuleContext ctx)
     {
         var ns = _implType.GetNamespace();
 
-        writer.Write("sc.Entry<global::{0}.{1}>(", ns, _implType.Identifier.ValueText);
-        writer.Write("{0}.{1:G}", TN.GlobServiceLifetimeEnum, _lifetime);
+        writer.Write("serviceCollection.Entry<{0}.{1}>(", ns, _implType.Identifier.ValueText);
+        writer.Write("ServiceLifetime.{0:G}", _lifetime);
 
         foreach (var @interface in _interfaces)
-        {
-            var interfaceFullName = @interface.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-            writer.Write(", typeof({0})", interfaceFullName);
-        }
+            writer.Write(", typeof({0})", @interface.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
 
         writer.WriteLine(");");
     }
-
 }

@@ -1,5 +1,5 @@
-﻿using Sample.Enhanced.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
+using Sample.Enhanced.DependencyInjection;
 
 namespace Sample;
 

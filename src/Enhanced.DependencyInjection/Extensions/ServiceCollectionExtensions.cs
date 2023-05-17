@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using Enhanced.DependencyInjection.Modules;
+using IServiceCollection = Microsoft.Extensions.DependencyInjection.IServiceCollection;
 
 namespace Enhanced.DependencyInjection.Extensions;
 
