@@ -14,7 +14,7 @@ using IServiceCollection = global::Microsoft.Extensions.DependencyInjection.ISer
 namespace {ctx.Ns}
 {{
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute(""{ToolName}"", ""{ToolVersion}"")]
-    public static class EnhancedDependencyInjectionExtensions
+    internal static class EnhancedDependencyInjectionExtensions
     {{
         /// <summary>
         /// Add generated module of current assembly to <see cref=""IServiceCollection"" />.
