@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\samples\SimpleApp\SimpleApp.csproj" />
+      <ProjectReference Include="..\..\samples\*\*.csproj" />
       <ProjectReference Include="..\..\src\Enhanced.DependencyInjection\Enhanced.DependencyInjection.csproj" />
     </ItemGroup>
 

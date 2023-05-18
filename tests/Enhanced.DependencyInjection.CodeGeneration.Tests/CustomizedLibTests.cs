@@ -4,20 +4,20 @@ using Enhanced.DependencyInjection.Modules;
 namespace Enhanced.DependencyInjection.CodeGeneration.Tests;
 
 [TestFixture]
-public class SimpleAppTests
+public class CustomizedLibTests
 {
     private Assembly _assembly;
 
     [SetUp]
     public void Setup()
     {
-        _assembly = typeof(SimpleAppRef).Assembly;
+        _assembly = typeof(CustomizedLibRef).Assembly;
     }
 
     [Test]
     public void ShouldContainModule()
     {
-        var containerType = _assembly.GetType("SimpleApp.Enhanced.DependencyInjection.ContainerModule");
+        var containerType = _assembly.GetType("DI.DIModule");
 
         Assert.NotNull(containerType, "containerType != null");
 
@@ -32,7 +32,7 @@ public class SimpleAppTests
     {
         var attribute = _assembly.GetCustomAttribute<ContainerModuleAttribute>();
 
-        var expectedType = _assembly.GetType("SimpleApp.Enhanced.DependencyInjection.ContainerModule");
+        var expectedType = _assembly.GetType("DI.DIModule");
 
         var actualType = typeof(ContainerModuleAttribute)
             .GetProperty("ModuleType", BindingFlags.NonPublic | BindingFlags.Instance)
@@ -47,13 +47,14 @@ public class SimpleAppTests
     public void ShouldContainExtensionMethod()
     {
         var extMethodClass =
-            _assembly.GetType("SimpleApp.Enhanced.DependencyInjection.EnhancedDependencyInjectionExtensions");
+            _assembly.GetType("DI.EnhancedDependencyInjectionExtensions");
 
-        var extMethod = extMethodClass?.GetMethod("AddEnhancedModules");
+        var extMethod = extMethodClass?.GetMethod("AddDIModule");
 
         Assert.NotNull(extMethodClass, "extMethodClass != null");
         Assert.NotNull(extMethod, "extMethod != null");
         Assert.True(extMethodClass.IsNotPublic, "extMethodClass.IsNotPublic");
         Assert.True(extMethodClass.IsSealed & extMethodClass.IsAbstract, "extMethodClass.IsStatic");
+        
     }
 }

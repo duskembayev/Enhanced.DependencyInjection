@@ -44,11 +44,10 @@ internal partial class Generator : IIncrementalGenerator
             $"{moduleContext.ModuleName}.g.cs",
             GetModuleSource(references, registrations, moduleContext));
 
+        ctx.AddSource("Attributes.g.cs", GetModuleAttributeSource(moduleContext));
+        
         if (moduleContext.MethodName is not null)
-        {
             ctx.AddSource("Extensions.g.cs", GetModuleRegistrationSource(moduleContext));
-            ctx.AddSource("Attributes.g.cs", GetModuleAttributeSource(moduleContext));
-        }
     }
 
     private static IRegistration? GetRegistration(GeneratorSyntaxContext ctx, CancellationToken cancellationToken)
