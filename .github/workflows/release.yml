@@ -2,28 +2,17 @@
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
 name: Release
-run-name: Release ${{ github.event.inputs.version }}
+run-name: ${{ github.event.release.name }}
 
 on:
-  workflow_dispatch:
-    branches: [ "main" ]
-    inputs:
-      version:
-        type: string
-        description: 'Version'
-        required: true
-        default: '1.0.0'
-      publish:
-        type: boolean
-        description: 'Publish to NuGet.org'
-        required: false
-        default: false
+  release:
+    types: [published]
 
 env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
   DOTNET_NOLOGO: true
   CONFIGURATION: release
-  VERSION: ${{ github.event.inputs.version }}
+  VERSION: ${{ github.event.release.tag_name }}
 
 permissions:
   contents: read
@@ -60,7 +49,7 @@ jobs:
 
     env:
       NUGET_SOURCE: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
-      NUGET_API_KEY: ${{ secrets.G_NUGET_API_KEY }}
+      NUGET_API_KEY: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - uses: actions/setup-dotnet@v3
@@ -73,7 +62,7 @@ jobs:
         run: dotnet nuget push ./out/*.nupkg --source ${{ env.NUGET_SOURCE }} --api-key ${{ env.NUGET_API_KEY }}
 
   publish_nuget:
-    if: github.event.inputs.publish == 'true'
+    if: '!github.event.release.prerelease'
     needs: [ pack ]
     runs-on: ubuntu-latest
     
@@ -90,18 +79,3 @@ jobs:
           path: ./out
       - name: Push NuGet package to NuGet.org
         run: dotnet nuget push ./out/*.nupkg --source ${{ env.NUGET_SOURCE }} --api-key ${{ env.NUGET_API_KEY }}
-  
-  create_release:
-    needs: [ pack, publish_github ]
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Create release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ env.VERSION }}
-          release_name: Release ${{ env.VERSION }}
-          draft: false
-          prerelease: ${{ contains(env.VERSION, 'preview') }}
