@@ -60,7 +60,7 @@ jobs:
 
     env:
       NUGET_SOURCE: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
-      NUGET_API_KEY: ${{ secrets.GITHUB_TOKEN }}
+      NUGET_API_KEY: ${{ secrets.G_NUGET_API_KEY }}
 
     steps:
       - uses: actions/setup-dotnet@v3
