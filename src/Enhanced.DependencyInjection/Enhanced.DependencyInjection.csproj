@@ -13,7 +13,7 @@
     <PackageProjectUrl>https://github.com/duskembayev/Enhanced.DependencyInjection</PackageProjectUrl>
     <PackageTags>dependency injection, attribute, ioc, iservicecollection, services, module, registration, entry</PackageTags>
     <PackageIcon>icons/icon.png</PackageIcon>
-    <PackageDescription>Provides the way to register services in IServiceCollection using attributes and code generators.</PackageDescription>
+    <PackageDescription>Enhanced.DependencyInjection is a NuGet package for simplified dependency registration in .NET Core DI container. It uses C# attributes and a source generator for explicit registration, making the process more understandable and faster.</PackageDescription>
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
   </PropertyGroup>
 
@@ -24,7 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Enhanced.DependencyInjection.CodeGeneration\Enhanced.DependencyInjection.CodeGeneration.csproj" ReferenceOutputAssembly="false" />
     <None Include="..\Enhanced.DependencyInjection.CodeGeneration\bin\$(Configuration)\netstandard2.0\Enhanced.DependencyInjection.CodeGeneration.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-    <None Include="Package.props" Pack="true" PackagePath="build" Visible="false" />
+    <None Include="Enhanced.DependencyInjection.props" Pack="true" PackagePath="build" Visible="false" />
   </ItemGroup>
 
   <ItemGroup>
