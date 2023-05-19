@@ -60,6 +60,7 @@ jobs:
 
     env:
       NUGET_SOURCE: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+      NUGET_API_KEY: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - uses: actions/setup-dotnet@v3
@@ -69,7 +70,7 @@ jobs:
           name: nuget
           path: ./out
       - name: Push NuGet package
-        run: dotnet nuget push ./out/*.nupkg --source ${{ env.NUGET_SOURCE }} --api-key ${{ secrets.GITHUB_TOKEN }}
+        run: dotnet nuget push ./out/*.nupkg --source ${{ env.NUGET_SOURCE }} --api-key ${{ env.NUGET_API_KEY }}
 
   publish_nuget:
     if: github.event.inputs.publish == 'true'
@@ -78,6 +79,7 @@ jobs:
     
     env:
       NUGET_SOURCE: https://api.nuget.org/v3/index.json
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
     
     steps:
       - uses: actions/setup-dotnet@v3
@@ -87,7 +89,7 @@ jobs:
           name: nuget
           path: ./out
       - name: Push NuGet package to NuGet.org
-        run: dotnet nuget push ./out/*.nupkg --source ${{ env.NUGET_SOURCE }} --api-key ${{ secrets.NUGET_API_KEY }}
+        run: dotnet nuget push ./out/*.nupkg --source ${{ env.NUGET_SOURCE }} --api-key ${{ env.NUGET_API_KEY }}
   
   create_release:
     needs: [ pack, publish_github ]
