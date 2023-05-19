@@ -9,7 +9,7 @@ internal partial class Generator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
 #if ENABLE_DEBUGGER
-        Debugger.Launch();
+        System.Diagnostics.Debugger.Launch();
 #endif
         var registrations = context.SyntaxProvider
             .CreateSyntaxProvider(
@@ -37,15 +37,12 @@ internal partial class Generator : IIncrementalGenerator
         Compilation compilation,
         ImmutableArray<IRegistration> registrations)
     {
-        var moduleContext = CreateModuleContext(ctx, options);
+        var moduleContext = CreateModuleContext(ctx, compilation, options);
         var references = GetReferenceModules(compilation, ctx.CancellationToken);
 
-        ctx.AddSource(
-            $"{moduleContext.ModuleName}.g.cs",
-            GetModuleSource(references, registrations, moduleContext));
-
+        ctx.AddSource("Module.g.cs", GetModuleSource(references, registrations, moduleContext));
         ctx.AddSource("Attributes.g.cs", GetModuleAttributeSource(moduleContext));
-        
+
         if (moduleContext.MethodName is not null)
             ctx.AddSource("Extensions.g.cs", GetModuleRegistrationSource(moduleContext));
     }
@@ -100,7 +97,10 @@ internal partial class Generator : IIncrementalGenerator
                 continue;
 
             if (result is not null)
-                return new ErrorRegistration(Diagnostics.ECHDI04(attribute.GetLocation(), DiagnosticSeverity.Error));
+                return new ErrorRegistration(Diagnostics.ECHDI04(
+                    DiagnosticSeverity.Error,
+                    attribute.GetLocation(),
+                    classDeclaration.Identifier.ValueText));
 
             result = registration;
         }
@@ -108,7 +108,10 @@ internal partial class Generator : IIncrementalGenerator
         return result;
     }
 
-    private static ModuleContext CreateModuleContext(SourceProductionContext ctx, AnalyzerConfigOptionsProvider options)
+    private static ModuleContext CreateModuleContext(
+        SourceProductionContext ctx,
+        Compilation compilation,
+        AnalyzerConfigOptionsProvider options)
     {
         var ns = options.GetModuleNamespace(ctx);
         var moduleName = options.GetModuleName(ctx);
@@ -118,6 +121,7 @@ internal partial class Generator : IIncrementalGenerator
             ns,
             moduleName,
             methodName,
+            compilation,
             ctx.ReportDiagnostic,
             ctx.CancellationToken
         );

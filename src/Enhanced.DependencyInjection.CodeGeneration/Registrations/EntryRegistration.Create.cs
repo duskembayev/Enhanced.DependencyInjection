@@ -82,6 +82,6 @@ internal sealed partial class EntryRegistration
 
     private static ErrorRegistration Error(AttributeSyntax attribute)
     {
-        return new ErrorRegistration(Diagnostics.ECHDI03(attribute.GetLocation(), DiagnosticSeverity.Error));
+        return new ErrorRegistration(Diagnostics.ECHDI03(DiagnosticSeverity.Error, attribute.GetLocation()));
     }
 }

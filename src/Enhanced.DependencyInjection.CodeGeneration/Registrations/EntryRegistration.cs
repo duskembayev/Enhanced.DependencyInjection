@@ -18,14 +18,44 @@ internal sealed partial class EntryRegistration : IRegistration
 
     void IRegistration.Write(TextWriter writer, ModuleContext ctx)
     {
-        var ns = _implType.GetNamespace();
+        var implName = $"{_implType.GetNamespace()}.{_implType.Identifier.ValueText}";
+        var implSymbol = ctx.Compilation.GetTypeByMetadataName(implName);
 
-        writer.Write("serviceCollection.Entry<{0}.{1}>(", ns, _implType.Identifier.ValueText);
+        if (implSymbol is null)
+        {
+            ctx.Report(Diagnostics.ECHDI01(
+                DiagnosticSeverity.Error,
+                _implType.GetLocation(),
+                implName));
+
+            return;
+        }
+        
+        WriteDiagnostics(implSymbol, ctx);
+
+        writer.Write("serviceCollection.Entry<{0}>(", implSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
         writer.Write("ServiceLifetime.{0:G}", _lifetime);
 
         foreach (var @interface in _interfaces)
             writer.Write(", typeof({0})", @interface.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
 
         writer.WriteLine(");");
+    }
+
+    private void WriteDiagnostics(INamedTypeSymbol implSymbol, ModuleContext ctx)
+    {
+        if (_interfaces.Length <= 0)
+            return;
+        
+        foreach (var @interface in _interfaces)
+        {
+            if (implSymbol.AllInterfaces.Contains(@interface, SymbolEqualityComparer.Default))
+                continue;
+                
+            ctx.Report(Diagnostics.ECHDI06(
+                DiagnosticSeverity.Error,
+                _implType.GetLocation(),
+                @interface.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)));
+        }
     }
 }

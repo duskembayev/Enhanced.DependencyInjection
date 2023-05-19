@@ -10,7 +10,7 @@ internal static class AnalyzerConfigOptionsProviderExtensions
             && !string.IsNullOrEmpty(propertyValue))
             return propertyValue;
 
-        ctx.ReportDiagnostic(Diagnostics.ECHDI05("ModuleNamespace", DiagnosticSeverity.Warning));
+        ctx.ReportDiagnostic(Diagnostics.ECHDI05(DiagnosticSeverity.Warning, "ModuleNamespace"));
         return "Enhanced_" + Guid.NewGuid().ToString("D").Substring(0, 8);
     }
 
@@ -20,7 +20,7 @@ internal static class AnalyzerConfigOptionsProviderExtensions
             && !string.IsNullOrEmpty(propertyValue))
             return propertyValue;
 
-        ctx.ReportDiagnostic(Diagnostics.ECHDI05("ModuleClassName", DiagnosticSeverity.Warning));
+        ctx.ReportDiagnostic(Diagnostics.ECHDI05(DiagnosticSeverity.Warning, "ModuleClassName"));
         return "ContainerModule";
     }
 
@@ -39,7 +39,7 @@ internal static class AnalyzerConfigOptionsProviderExtensions
 
         if (generate is null)
         {
-            ctx.ReportDiagnostic(Diagnostics.ECHDI05("GenerateModuleRegistrationMethod", DiagnosticSeverity.Warning));
+            ctx.ReportDiagnostic(Diagnostics.ECHDI05(DiagnosticSeverity.Warning, "GenerateModuleRegistrationMethod"));
             generate = true;
         }
 
@@ -50,7 +50,7 @@ internal static class AnalyzerConfigOptionsProviderExtensions
             && !string.IsNullOrEmpty(propertyValue))
             return propertyValue;
 
-        ctx.ReportDiagnostic(Diagnostics.ECHDI05("ModuleRegistrationMethodName", DiagnosticSeverity.Warning));
+        ctx.ReportDiagnostic(Diagnostics.ECHDI05(DiagnosticSeverity.Warning, "ModuleRegistrationMethodName"));
         return "AddEnhancedModules";
     }
 }

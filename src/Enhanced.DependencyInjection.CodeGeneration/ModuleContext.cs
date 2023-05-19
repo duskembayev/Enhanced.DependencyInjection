@@ -7,6 +7,7 @@ internal sealed class ModuleContext
     public ModuleContext(string ns,
         string moduleName,
         string? methodName,
+        Compilation compilation,
         Action<Diagnostic> diagnosticHandler,
         CancellationToken cancellationToken)
     {
@@ -15,6 +16,7 @@ internal sealed class ModuleContext
         Ns = ns;
         ModuleName = moduleName;
         MethodName = methodName;
+        Compilation = compilation;
 
         CancellationToken = cancellationToken;
     }
@@ -22,7 +24,7 @@ internal sealed class ModuleContext
     public string Ns { get; }
     public string ModuleName { get; }
     public string? MethodName { get; }
-
+    public Compilation Compilation { get; }
     public CancellationToken CancellationToken { get; }
 
     public void Report(Diagnostic diagnostic)

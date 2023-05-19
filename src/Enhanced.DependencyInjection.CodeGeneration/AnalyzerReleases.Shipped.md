@@ -19,3 +19,11 @@ ENHDI03 | EnhDiModuleGenerator | Error    | Invalid entry definition
 Rule ID | Category | Severity | Notes
 --------|----------|----------|--------------------
 ENHDI04 | EnhDiModuleGenerator | Error    | Incompatible attributes
+ENHDI05 | EnhDiModuleGenerator | Warning  | Property resolve error
+ENHDI06 | EnhDiModuleGenerator | Error    | Incompatible attributes
+
+### Removed Rules
+
+Rule ID | Category | Severity | Notes
+--------|----------|----------|--------------------
+ENHDI02 | EnhDiModuleGenerator | Error    | Root namespace resolve error
