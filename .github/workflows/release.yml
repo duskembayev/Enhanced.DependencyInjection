@@ -25,6 +25,10 @@ env:
   CONFIGURATION: release
   VERSION: ${{ github.event.inputs.version }}
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   pack:
     runs-on: ubuntu-latest
@@ -54,9 +58,6 @@ jobs:
     needs: [ pack ]
     runs-on: ubuntu-latest
 
-    permissions:
-      packages: write
-
     env:
       NUGET_SOURCE: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
 
@@ -67,10 +68,8 @@ jobs:
         with:
           name: nuget
           path: ./out
-      - name: Add NuGet source
-        run: dotnet nuget add source ${{ env.NUGET_SOURCE }} --name github
       - name: Push NuGet package
-        run: dotnet nuget push ./out/*.nupkg --source github --api-key ${{ secrets.GITHUB_TOKEN }}
+        run: dotnet nuget push ./out/*.nupkg --source ${{ env.NUGET_SOURCE }} --api-key ${{ secrets.GITHUB_TOKEN }}
 
   publish_nuget:
     if: github.event.inputs.publish == 'true'
@@ -87,10 +86,8 @@ jobs:
         with:
           name: nuget
           path: ./out
-      - name: Add NuGet source
-        run: dotnet nuget add source ${{ env.NUGET_SOURCE }} --name nuget
       - name: Push NuGet package to NuGet.org
-        run: dotnet nuget push ./out/*.nupkg --source nuget --api-key ${{ secrets.NUGET_API_KEY }}
+        run: dotnet nuget push ./out/*.nupkg --source ${{ env.NUGET_SOURCE }} --api-key ${{ secrets.NUGET_API_KEY }}
   
   create_release:
     needs: [ pack, publish_github ]
