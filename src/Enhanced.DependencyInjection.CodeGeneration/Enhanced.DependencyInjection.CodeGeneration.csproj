@@ -6,6 +6,7 @@
     <IncludeCopyLocalFilesOutputGroup>true</IncludeCopyLocalFilesOutputGroup>
     <SignAssembly>true</SignAssembly>
     <EnableDebugger>false</EnableDebugger>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(EnableDebugger)' == 'true'">
