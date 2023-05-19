@@ -54,6 +54,9 @@ jobs:
     needs: [ pack ]
     runs-on: ubuntu-latest
 
+    permissions:
+      packages: write
+
     env:
       NUGET_SOURCE: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
 
@@ -85,9 +88,9 @@ jobs:
           name: nuget
           path: ./out
       - name: Add NuGet source
-        run: dotnet nuget add source ${{ env.NUGET_SOURCE }} --name nuget.org
+        run: dotnet nuget add source ${{ env.NUGET_SOURCE }} --name nuget
       - name: Push NuGet package to NuGet.org
-        run: dotnet nuget push ./out/*.nupkg --source nuget.org --api-key ${{ secrets.NUGET_API_KEY }}
+        run: dotnet nuget push ./out/*.nupkg --source nuget --api-key ${{ secrets.NUGET_API_KEY }}
   
   create_release:
     needs: [ pack, publish_github ]
