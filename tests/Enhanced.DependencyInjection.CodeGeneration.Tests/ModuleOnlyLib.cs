@@ -44,7 +44,7 @@ public class ModuleOnlyLibTests
     }
 
     [Test]
-    public void ShouldContainExtensionMethod()
+    public void ShouldNotContainExtensionMethod()
     {
         var extMethodClass =
             _assembly.GetType("ModuleOnlyLib.Enhanced.DependencyInjection.EnhancedDependencyInjectionExtensions");
