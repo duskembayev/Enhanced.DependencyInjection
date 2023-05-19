@@ -14,10 +14,6 @@ env:
   CONFIGURATION: release
   VERSION: ${{ github.event.release.tag_name }}
 
-permissions:
-  contents: read
-  packages: write
-
 jobs:
   pack:
     runs-on: ubuntu-latest
@@ -46,6 +42,10 @@ jobs:
   publish_github:
     needs: [ pack ]
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
 
     env:
       NUGET_SOURCE: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
