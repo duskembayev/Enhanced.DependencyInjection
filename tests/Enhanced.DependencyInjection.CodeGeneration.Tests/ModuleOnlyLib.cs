@@ -44,11 +44,16 @@ public class ModuleOnlyLibTests
     }
 
     [Test]
-    public void ShouldNotContainExtensionMethod()
+    public void ShouldContainExtensionMethod()
     {
         var extMethodClass =
             _assembly.GetType("Microsoft.Extensions.DependencyInjection.EnhancedDependencyInjectionExtensions");
 
-        Assert.Null(extMethodClass, "extMethodClass == null");
+        var extMethod = extMethodClass?.GetMethod("AddEnhancedModules");
+
+        Assert.NotNull(extMethodClass, "extMethodClass != null");
+        Assert.NotNull(extMethod, "extMethod != null");
+        Assert.True(extMethodClass.IsNotPublic, "extMethodClass.IsNotPublic");
+        Assert.True(extMethodClass.IsSealed & extMethodClass.IsAbstract, "extMethodClass.IsStatic");
     }
 }
