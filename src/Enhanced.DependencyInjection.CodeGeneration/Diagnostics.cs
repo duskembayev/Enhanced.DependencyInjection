@@ -11,11 +11,6 @@ internal static class Diagnostics
             "Unable to resolve type '{0}'",
             "EnhDiModuleGenerator", defaultSeverity: DiagnosticSeverity.Error, isEnabledByDefault: true);
 
-    private static readonly DiagnosticDescriptor _ECHDI05 =
-        new DiagnosticDescriptor("ENHDI05", "Property resolve error",
-            "Unable to resolve property '{0}'",
-            "EnhDiModuleGenerator", defaultSeverity: DiagnosticSeverity.Warning, isEnabledByDefault: true);
-
     private static readonly DiagnosticDescriptor _ECHDI06 =
         new DiagnosticDescriptor("ENHDI06", "Invalid implementation",
             "Implementation type is not assignable to type '{0}'",
@@ -33,9 +28,6 @@ internal static class Diagnostics
 
     internal static Diagnostic ECHDI01(DiagnosticSeverity severity, Location location, string typeName)
         => Diagnostic.Create(_ECHDI01, location, severity, null, null, typeName);
-
-    internal static Diagnostic ECHDI05(DiagnosticSeverity severity, string propertyName)
-        => Diagnostic.Create(_ECHDI05, Location.None, severity, null, null, propertyName);
 
     internal static Diagnostic ECHDI03(DiagnosticSeverity severity, Location location)
         => Diagnostic.Create(_ECHDI03, location, severity);

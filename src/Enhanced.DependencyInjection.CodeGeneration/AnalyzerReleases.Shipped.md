@@ -27,3 +27,11 @@ ENHDI06 | EnhDiModuleGenerator | Error    | Incompatible attributes
 Rule ID | Category | Severity | Notes
 --------|----------|----------|--------------------
 ENHDI02 | EnhDiModuleGenerator | Error    | Root namespace resolve error
+
+## Release 1.2
+
+### Removed Rules
+
+Rule ID | Category | Severity | Notes
+--------|----------|----------|--------------------
+ENHDI05 | EnhDiModuleGenerator | Warning  | Property resolve error
