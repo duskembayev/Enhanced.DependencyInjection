@@ -17,7 +17,7 @@ public class ModuleOnlyLibTests
     [Test]
     public void ShouldContainModule()
     {
-        var containerType = _assembly.GetType("ModuleOnlyLib.Enhanced.DependencyInjection.ContainerModule");
+        var containerType = _assembly.GetType("Microsoft.Extensions.DependencyInjection.ContainerModule");
 
         Assert.NotNull(containerType, "containerType != null");
 
@@ -32,7 +32,7 @@ public class ModuleOnlyLibTests
     {
         var attribute = _assembly.GetCustomAttribute<ContainerModuleAttribute>();
 
-        var expectedType = _assembly.GetType("ModuleOnlyLib.Enhanced.DependencyInjection.ContainerModule");
+        var expectedType = _assembly.GetType("Microsoft.Extensions.DependencyInjection.ContainerModule");
 
         var actualType = typeof(ContainerModuleAttribute)
             .GetProperty("ModuleType", BindingFlags.NonPublic | BindingFlags.Instance)
@@ -47,7 +47,7 @@ public class ModuleOnlyLibTests
     public void ShouldNotContainExtensionMethod()
     {
         var extMethodClass =
-            _assembly.GetType("ModuleOnlyLib.Enhanced.DependencyInjection.EnhancedDependencyInjectionExtensions");
+            _assembly.GetType("Microsoft.Extensions.DependencyInjection.EnhancedDependencyInjectionExtensions");
 
         Assert.Null(extMethodClass, "extMethodClass == null");
     }

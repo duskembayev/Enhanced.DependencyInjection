@@ -1,11 +1,12 @@
 ﻿using Enhanced.DependencyInjection.CodeGeneration.Registrations;
-using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Enhanced.DependencyInjection.CodeGeneration;
 
 [Generator(LanguageNames.CSharp)]
 internal partial class Generator : IIncrementalGenerator
 {
+    
+    
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
 #if ENABLE_DEBUGGER
@@ -22,29 +23,29 @@ internal partial class Generator : IIncrementalGenerator
             .WhereNotNull()
             .Collect();
 
-        var valueProvider = context.AnalyzerConfigOptionsProvider
-            .Combine(context.CompilationProvider)
-            .Combine(registrations);
+        var valueProvider = context.CompilationProvider.Combine(registrations);
 
-        context.RegisterSourceOutput(
+        context.RegisterPostInitializationOutput(PreGenerate);
+        context.RegisterImplementationSourceOutput(
             valueProvider,
-            static (ctx, source) => Generate(ctx, source.Left.Left, source.Left.Right, source.Right));
+            static (ctx, source) => Generate(ctx, source.Left, source.Right));
+    }
+
+    private static void PreGenerate(IncrementalGeneratorPostInitializationContext ctx)
+    {
+        ctx.AddSource("Attributes.g.cs", GetModuleAttributeSource());
+        ctx.AddSource("Extensions.g.cs", GetModuleRegistrationSource());
     }
 
     private static void Generate(
         SourceProductionContext ctx,
-        AnalyzerConfigOptionsProvider options,
         Compilation compilation,
         ImmutableArray<IRegistration> registrations)
     {
-        var moduleContext = CreateModuleContext(ctx, compilation, options);
+        var moduleContext = CreateModuleContext(ctx, compilation);
         var references = GetReferenceModules(compilation, ctx.CancellationToken);
 
         ctx.AddSource("Module.g.cs", GetModuleSource(references, registrations, moduleContext));
-        ctx.AddSource("Attributes.g.cs", GetModuleAttributeSource(moduleContext));
-
-        if (moduleContext.MethodName is not null)
-            ctx.AddSource("Extensions.g.cs", GetModuleRegistrationSource(moduleContext));
     }
 
     private static IRegistration? GetRegistration(GeneratorSyntaxContext ctx, CancellationToken cancellationToken)
@@ -108,19 +109,9 @@ internal partial class Generator : IIncrementalGenerator
         return result;
     }
 
-    private static ModuleContext CreateModuleContext(
-        SourceProductionContext ctx,
-        Compilation compilation,
-        AnalyzerConfigOptionsProvider options)
+    private static ModuleContext CreateModuleContext(SourceProductionContext ctx, Compilation compilation)
     {
-        var ns = options.GetModuleNamespace(ctx);
-        var moduleName = options.GetModuleName(ctx);
-        var methodName = options.GetModuleRegistrationMethodName(ctx);
-
         return new ModuleContext(
-            ns,
-            moduleName,
-            methodName,
             compilation,
             ctx.ReportDiagnostic,
             ctx.CancellationToken

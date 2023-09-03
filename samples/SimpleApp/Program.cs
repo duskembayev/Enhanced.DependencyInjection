@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
-using SimpleApp.Enhanced.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 await Host
     .CreateDefaultBuilder()

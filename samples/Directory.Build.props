@@ -4,7 +4,6 @@
     </PropertyGroup>
 
     <Import Project="..\Directory.Build.props" />
-    <Import Project="..\src\Enhanced.DependencyInjection\Enhanced.DependencyInjection.props" />
 
     <ItemGroup>
         <ProjectReference
