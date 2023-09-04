@@ -1,4 +1,6 @@
-﻿namespace Enhanced.DependencyInjection;
+﻿#if LANG11_OR_GREATER
+
+namespace Enhanced.DependencyInjection;
 
 /// <summary>
 ///     Attribute to declare implementation entry with singleton lifetime and implemented service.
@@ -41,3 +43,5 @@ public sealed class SingletonAttribute<TInterface1, TInterface2> : Attribute
 public sealed class SingletonAttribute<TInterface1, TInterface2, TInterface3> : Attribute
 {
 }
+
+#endif

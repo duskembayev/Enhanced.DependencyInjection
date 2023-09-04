@@ -11,6 +11,10 @@
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Enhanced.DependencyInjection.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(LangVersion)' >= '11'">
+    <DefineConstants>LANG11_OR_GREATER</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup Condition="'$(IncludeCompat)' == 'true'">
     <Compile Include="$(MSBuildThisFileDirectory)compat\**\*.cs" LinkBase=".compat" />
   </ItemGroup>

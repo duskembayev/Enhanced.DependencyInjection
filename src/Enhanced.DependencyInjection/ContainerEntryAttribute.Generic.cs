@@ -1,4 +1,6 @@
-﻿namespace Enhanced.DependencyInjection;
+﻿#if LANG11_OR_GREATER
+
+namespace Enhanced.DependencyInjection;
 
 /// <summary>
 ///     Represents an attribute that is used to declare implementation entry lifetime and implemented services.
@@ -77,3 +79,5 @@ public sealed class ContainerEntryAttribute<TInterface1, TInterface2, TInterface
 
     internal ServiceLifetime Lifetime { get; }
 }
+
+#endif
