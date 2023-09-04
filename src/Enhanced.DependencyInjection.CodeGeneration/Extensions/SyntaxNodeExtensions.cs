@@ -57,6 +57,11 @@ internal static class SyntaxNodeExtensions
             .ToImmutableArray();
     }
 
+    internal static string? FindStringValue(this ExpressionSyntax @this, SemanticModel semanticModel)
+    {
+        return semanticModel.GetConstantValue(@this).Value as string;
+    }
+
     // determine the namespace the class/enum/struct is declared in, if any
     internal static string GetNamespace(this BaseTypeDeclarationSyntax syntax)
     {

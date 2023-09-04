@@ -1,7 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-await Host
-    .CreateDefaultBuilder()
-    .ConfigureServices(c => c.AddEnhancedModules())
-    .RunConsoleAsync();
+var builder = Host.CreateApplicationBuilder(args);
+builder.Configuration.AddJsonFile("appsettings.json");
+builder.Services.AddEnhancedModules(builder.Configuration);
+await builder.Build().RunAsync();

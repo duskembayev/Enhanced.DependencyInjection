@@ -1,4 +1,6 @@
-﻿namespace Enhanced.DependencyInjection.CodeGeneration.Registrations;
+﻿using System.Diagnostics;
+
+namespace Enhanced.DependencyInjection.CodeGeneration.Registrations;
 
 internal sealed partial class EntryRegistration : IRegistration
 {
@@ -30,10 +32,11 @@ internal sealed partial class EntryRegistration : IRegistration
 
             return;
         }
-        
+
         WriteDiagnostics(implSymbol, ctx);
 
-        writer.Write("serviceCollection.Entry<{0}>(", implSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
+        writer.Write("serviceCollection.Entry<{0}>(",
+            implSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
         writer.Write("ServiceLifetime.{0:G}", _lifetime);
 
         foreach (var @interface in _interfaces)
@@ -46,16 +49,37 @@ internal sealed partial class EntryRegistration : IRegistration
     {
         if (_interfaces.Length <= 0)
             return;
-        
+
         foreach (var @interface in _interfaces)
         {
             if (implSymbol.AllInterfaces.Contains(@interface, SymbolEqualityComparer.Default))
                 continue;
-                
+
+            if (implSymbol.Equals(@interface, SymbolEqualityComparer.Default))
+                continue;
+
+            if (IsInheritsFrom(implSymbol, @interface))
+                continue;
+
             ctx.Report(Diagnostics.ECHDI06(
                 DiagnosticSeverity.Error,
                 _implType.GetLocation(),
                 @interface.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)));
         }
+    }
+
+    private static bool IsInheritsFrom(INamedTypeSymbol implSymbol, ISymbol type)
+    {
+        var baseType = implSymbol.BaseType;
+
+        while (baseType is not null)
+        {
+            if (baseType.Equals(type, SymbolEqualityComparer.Default))
+                return true;
+
+            baseType = baseType.BaseType;
+        }
+
+        return false;
     }
 }
