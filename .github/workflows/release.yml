@@ -38,28 +38,6 @@ jobs:
           path: ./out
           if-no-files-found: error
           retention-days: 5
-  
-  publish_github:
-    needs: [ pack ]
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      packages: write
-
-    env:
-      NUGET_SOURCE: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
-      NUGET_API_KEY: ${{ secrets.GITHUB_TOKEN }}
-
-    steps:
-      - uses: actions/setup-dotnet@v3
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: nuget
-          path: ./out
-      - name: Push NuGet package
-        run: dotnet nuget push ./out/*.nupkg --source ${{ env.NUGET_SOURCE }} --api-key ${{ env.NUGET_API_KEY }}
 
   publish_nuget:
     if: '!github.event.release.prerelease'
