@@ -5,8 +5,6 @@ namespace Enhanced.DependencyInjection.CodeGeneration;
 [Generator(LanguageNames.CSharp)]
 internal partial class Generator : IIncrementalGenerator
 {
-    
-    
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
 #if ENABLE_DEBUGGER
@@ -33,8 +31,7 @@ internal partial class Generator : IIncrementalGenerator
 
     private static void PreGenerate(IncrementalGeneratorPostInitializationContext ctx)
     {
-        ctx.AddSource("Attributes.g.cs", GetModuleAttributeSource());
-        ctx.AddSource("Extensions.g.cs", GetModuleRegistrationSource());
+        ctx.AddSource("Extensions.Pre.g.cs", GetModulePreRegistrationSource());
     }
 
     private static void Generate(
@@ -45,6 +42,8 @@ internal partial class Generator : IIncrementalGenerator
         var moduleContext = CreateModuleContext(ctx, compilation);
         var references = GetReferenceModules(compilation, ctx.CancellationToken);
 
+        ctx.AddSource("Extensions.g.cs", GetModuleRegistrationSource(moduleContext.ModuleNamespace));
+        ctx.AddSource("Attributes.g.cs", GetModuleAttributeSource(moduleContext.ModuleNamespace));
         ctx.AddSource("Module.g.cs", GetModuleSource(references, registrations, moduleContext));
     }
 
@@ -111,7 +110,12 @@ internal partial class Generator : IIncrementalGenerator
 
     private static ModuleContext CreateModuleContext(SourceProductionContext ctx, Compilation compilation)
     {
+        var moduleNamespace
+            = compilation.AssemblyName?.Replace(' ', '_')
+              ?? "DynamicLib";
+
         return new ModuleContext(
+            moduleNamespace,
             compilation,
             ctx.ReportDiagnostic,
             ctx.CancellationToken
