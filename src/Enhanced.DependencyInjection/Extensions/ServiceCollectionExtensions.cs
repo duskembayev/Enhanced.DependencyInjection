@@ -107,7 +107,7 @@ public static class ServiceCollectionExtensions
     ///     Module type with default constructor
     /// </typeparam>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static void Module<TModule>(this IServiceCollection serviceCollection, IConfiguration? configuration = null)
+    public static void Module<TModule>(this IServiceCollection serviceCollection, IConfiguration? configuration)
         where TModule : IContainerModule, new()
     {
         var module = new TModule();

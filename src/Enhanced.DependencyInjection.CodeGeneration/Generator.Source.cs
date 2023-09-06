@@ -105,7 +105,7 @@ using ServiceLifetime = global::Microsoft.Extensions.DependencyInjection.Service
     private static void WriteModule(ISymbol module, TextWriter writer)
     {
         writer.WriteLine(
-            "serviceCollection.Module<{0}>();",
+            "serviceCollection.Module<{0}>(configuration);",
             module.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
     }
 }
