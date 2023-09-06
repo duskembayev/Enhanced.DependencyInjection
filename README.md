@@ -5,6 +5,8 @@
 
 `Enhanced.DependencyInjection` is a NuGet package for simplified dependency registration in .NET Core DI container. It uses C# attributes and a source generator for explicit registration, making the process more understandable and faster. It makes applications more resilient and easily extensible, and welcomes community contributions.
 
+> **REFLECTION-FREE !!!**
+
 ## Motivation
 
 `Enhanced.DependencyInjection` was created with the goal of simplifying dependency registration in .NET Core applications. By using C# attributes and a source generator, the package provides an intuitive and explicit way to register dependencies, making the process faster and easier to understand.
