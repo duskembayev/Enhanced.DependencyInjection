@@ -7,7 +7,7 @@
     <IncludeCompat>false</IncludeCompat>
     <IsPackable>false</IsPackable>
     <SignAssembly>false</SignAssembly>
-    <WarningsAsErrors>Nullable</WarningsAsErrors>
+    <WarningsAsErrors>nullable</WarningsAsErrors>
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Enhanced.DependencyInjection.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 

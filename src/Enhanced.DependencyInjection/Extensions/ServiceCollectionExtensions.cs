@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using Enhanced.DependencyInjection.Modules;
-using IServiceCollection = Microsoft.Extensions.DependencyInjection.IServiceCollection;
+using Microsoft.Extensions.Configuration;
 
 namespace Enhanced.DependencyInjection.Extensions;
 
@@ -37,8 +37,9 @@ public static class ServiceCollectionExtensions
     /// <param name="interface0">The Type of the service.</param>
     /// <typeparam name="TImpl">The Type implementing the service.</typeparam>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static void Entry<TImpl>(this IServiceCollection serviceCollection, ServiceLifetime lifetime,
-        Type interface0)
+    public static void Entry<TImpl>(
+        this IServiceCollection serviceCollection,
+        ServiceLifetime lifetime, Type interface0)
         where TImpl : class
     {
         serviceCollection.Add(new ServiceDescriptor(interface0, typeof(TImpl), lifetime));
@@ -75,19 +76,41 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
+    ///     Add configuration instance to <see cref="IServiceCollection" />.
+    /// </summary>
+    /// <param name="serviceCollection">Collection of service descriptors.</param>
+    /// <param name="configuration">The configuration being bound.</param>
+    /// <typeparam name="TImpl">The type of options being configured.</typeparam>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public static void Options<TImpl>(this IServiceCollection serviceCollection, IConfiguration? configuration)
+        where TImpl : class
+    {
+        if (configuration is null)
+        {
+            serviceCollection.Configure<TImpl>(static _ => { });
+            return;
+        }
+
+        serviceCollection.Configure<TImpl>(configuration);
+    }
+
+    /// <summary>
     ///     Add generated module to <see cref="IServiceCollection" /> by type.
     /// </summary>
     /// <param name="serviceCollection">
-    ///     Collection of service descriptors.
+    ///     The <see cref="IServiceCollection" /> to add the services to.
+    /// </param>
+    /// <param name="configuration">
+    ///     The configuration being bound.
     /// </param>
     /// <typeparam name="TModule">
     ///     Module type with default constructor
     /// </typeparam>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static void Module<TModule>(this IServiceCollection serviceCollection)
+    public static void Module<TModule>(this IServiceCollection serviceCollection, IConfiguration? configuration)
         where TModule : IContainerModule, new()
     {
         var module = new TModule();
-        module.AddEntries(serviceCollection);
+        module.AddEntries(serviceCollection, configuration);
     }
 }

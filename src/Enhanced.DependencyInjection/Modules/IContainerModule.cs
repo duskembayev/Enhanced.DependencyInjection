@@ -1,4 +1,6 @@
-﻿namespace Enhanced.DependencyInjection.Modules;
+﻿using Microsoft.Extensions.Configuration;
+
+namespace Enhanced.DependencyInjection.Modules;
 
 /// <summary>
 ///     Provides a mechanism for registering assembly entries in <see cref="IServiceCollection" />.
@@ -9,7 +11,10 @@ public interface IContainerModule
     ///     Add entries to provided <see cref="IServiceCollection" />.
     /// </summary>
     /// <param name="serviceCollection">
-    ///     Collection of service descriptors.
+    ///     The <see cref="IServiceCollection"/> to add the services to.
     /// </param>
-    void AddEntries(IServiceCollection serviceCollection);
+    /// <param name="configuration">
+    ///     The configuration being bound.
+    /// </param>
+    void AddEntries(IServiceCollection serviceCollection, IConfiguration? configuration);
 }

@@ -90,6 +90,9 @@ internal partial class Generator : IIncrementalGenerator
                     => EntryRegistration.CreateFromGenericAttribute(
                         ServiceLifetime.Transient, attributeType, classDeclaration),
 
+                { Name: TN.OptionsAttributeName }
+                    => OptionsRegistration.Create(attribute, classDeclaration, ctx),
+
                 _ => null
             };
 

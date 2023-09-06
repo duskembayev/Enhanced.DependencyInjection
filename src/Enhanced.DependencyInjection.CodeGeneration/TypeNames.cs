@@ -16,4 +16,7 @@ internal static class TypeNames
 
     internal const string TransientAttributeName =
         "TransientAttribute";
+
+    internal const string OptionsAttributeName =
+        "OptionsAttribute";
 }
