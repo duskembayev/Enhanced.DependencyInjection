@@ -3,20 +3,20 @@
 [![license](https://flat.badgen.net/github/license/duskembayev/Enhanced.DependencyInjection)](LICENSE)
 [![nuget](https://flat.badgen.net/nuget/v/Enhanced.DependencyInjection?icon=nuget)](https://www.nuget.org/packages/Enhanced.DependencyInjection)
 
-`Enhanced.DependencyInjection` is a NuGet package for simplified dependency registration in .NET Core DI container. It uses C# attributes and a source generator for explicit registration, making the process more understandable and faster. It makes applications more resilient and easily extensible, and welcomes community contributions.
+`Enhanced.DependencyInjection` is a NuGet package for simplified dependency registration in .NET DI container. It uses C# attributes and a source generator for explicit registration, making the process more understandable and faster. It makes applications more resilient and easily extensible, and welcomes community contributions.
 
 > **REFLECTION-FREE !!!**
 
 ## Motivation
 
-`Enhanced.DependencyInjection` was created with the goal of simplifying dependency registration in .NET Core applications. By using C# attributes and a source generator, the package provides an intuitive and explicit way to register dependencies, making the process faster and easier to understand.
+`Enhanced.DependencyInjection` was created with the goal of simplifying dependency registration in .NET applications. By using C# attributes and a source generator, the package provides an intuitive and explicit way to register dependencies, making the process faster and easier to understand.
 
 However, the main motivation behind `Enhanced.DependencyInjection` is to provide developers with full control over the lifecycle of dependencies and to see that lifecycle in the context of implementation code. This helps avoid separating knowledge about dependencies between different parts of the application and improves code understanding, which speeds up development and reduces the likelihood of errors.
 
 ## Features
 `Enhanced.DependencyInjection` provides the following key features:
 
-- Integration with .NET Core dependency injection.
+- Integration with .NET dependency injection.
 - Support for all service lifetimes: transient, scoped, and singleton.
 - Support for option registration and linking it with a configuration section.
 - Implicit registration of dependencies from satellite modules.
